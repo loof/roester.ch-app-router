@@ -6,9 +6,8 @@
 .main {
     grid-area: main;
     height: 100%;
-    text-align: center;
     font-size: 1.5rem;
-    padding: 0.8rem 1rem 1rem 1rem;
+    padding: 1.8rem 1rem 1rem 1rem;
 }
 
 .main article {
@@ -17,21 +16,37 @@
 }
 
 .main p {
-    font-size: 1rem;
+    font-size: 2rem;
     font-family: "Montserrat", sans-serif;
+    font-weight: lighter;
     text-transform: none;
     margin-bottom: 2rem;
 }
 
+
+
 .main h1 {
     color: white;
+    margin-bottom: 2rem;
+}
+
+.main h2 {
+    font-size: 3rem;
+    color: hsl(var(--primary));
+}
+
+.main h3 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    padding-top: 2rem;
+    color: hsl(var(--primary-foreground));
 }
 
 .main h4 {
     font-family: "Montserrat", sans-serif;
     text-transform: none;
     font-weight: normal;
-    font-size: 1.3rem;
+    font-size: 2rem;
     color: #E939B4;
 }
 

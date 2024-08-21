@@ -1,9 +1,14 @@
 import Link from 'next/link';
-import NavigationLinks from "@/components/navigation-links";
+import NavigationLinks from "@/components/nav-bar/navigation-links";
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
+import {useUser} from "@auth0/nextjs-auth0/client";
+import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
+
 export default function DesktopNavLinks() {
     const pathname = usePathname()
+    const { user, isLoading } = useUser();
+
     return (
         <ul className="flex flex-row space-x-6">
             {
@@ -19,6 +24,11 @@ export default function DesktopNavLinks() {
                 })
             }
 
+            {
+                <LoginLogoutListItem className={"text-xl"} />
+            }
+
+            {JSON.stringify(user)}
 
         </ul>
     );

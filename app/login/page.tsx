@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {toast} from "@/components/ui/use-toast"
-import {login} from "@/lib/api/auth";
+import {login} from "@/lib/api/auth-old";
 import { useRouter } from 'next/navigation'
 import {useState} from "react";
 import { useSearchParams } from 'next/navigation'

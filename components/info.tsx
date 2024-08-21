@@ -1,23 +1,26 @@
 "use client"
 
-import styles from "./Info.module.css"
+import styles from "./info.module.css"
 import Link from "next/link";
 import Image from 'next/image'
 import {Button} from "@/components/ui/button";
 import {formatDate} from "@/lib/utils";
 import {v4 as uuidv4} from 'uuid';
 import Properties from "@/components/properties";
+import { useRouter } from 'next/navigation'
 
 
 export default function Info({data, isBookable = false, bookingLink = "/roasts/next/reserve"}) {
+    const router = useRouter()
 
     return (data && <>
         <main className={styles.main}>
-            <Link href="#" onClick={() => {}}>
-                <Button>zurück</Button>
-            </Link>
-
-            <h1>{`${data.name ? `${data.name} ` : ""}${formatDate(data.date)}`}</h1>
+            <div className={"mb-10 text-center  "}>
+                <Link href="#" onClick={() => {router.back()}}>
+                    <Button>zurück</Button>
+                </Link>
+            </div>
+            <h1 className={"text-6xl"}>{`${data.name ? `${data.name} ` : ""}${formatDate(data.date)}`}</h1>
 
             {data.description && <p>{data.description && (data.description)}</p>}
             {data.eventProductAmounts.map((epa) => {

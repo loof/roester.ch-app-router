@@ -21,7 +21,9 @@ export default function InfoPage({ params }: { params: { date: string } }) {
                     setData(new_data)
                     setLoading(false)
                 } else if (params.date === "last") {
-                    setData(await getLastEvent())
+                    const new_data = await getLastEvent()
+                    setData(new_data)
+                    setLoading(false)
                 }
             } catch (e) {
                 alert("Die Röstung konnte nicht geladen werden. Bitte versuche es erneut.")
@@ -35,8 +37,8 @@ export default function InfoPage({ params }: { params: { date: string } }) {
 
     return (
 
-        <main className={`${styles.main}`}>
+        <>
             {!isLoading && <Info data={data} isBookable={true}/>}
             {isLoading && <Spinner/>}
-        </main>)
+        </>)
 }

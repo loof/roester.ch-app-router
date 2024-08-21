@@ -1,5 +1,3 @@
-"use"
-
 import {formatDate} from "@/lib/utils";
 
 export default function OverviewTitle(title: string) {

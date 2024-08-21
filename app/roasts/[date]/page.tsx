@@ -6,10 +6,13 @@ import Overview from "@/components/overview";
 import styles from "./roasts.module.css"
 import {Spinner} from "@/components/spinner";
 import OverviewTitle from "@/components/overview-title";
+import {useUser} from "@auth0/nextjs-auth0/client";
+import {usePathname} from "next/navigation";
 
 export default function Roasts({ params }: { params: { date: string } }) {
     const [data, setData] = useState({})
-    const [isLoading, setLoading] = useState(true)
+    const { user, isLoading } = useUser();
+    const pathname = usePathname()
 
     useEffect(() => {
         const loadData = async () => {
@@ -26,10 +29,6 @@ export default function Roasts({ params }: { params: { date: string } }) {
         loadData()
     }, [])
 
-    useEffect(() => {
-        if (!data) return;
-        setLoading(false)
-    }, [data]);
 
     const title = OverviewTitle(params.date)
 
@@ -39,7 +38,9 @@ export default function Roasts({ params }: { params: { date: string } }) {
             {isLoading && <Spinner/>}
             {!isLoading &&
                 <Overview className={"flex container flex-col  text-center gap-16"} data={data}
-                          title={title} showAmountLeft={true} infoLink="/roasts/next/info"
-                          reserveLink="/roasts/next/reserve"/>}
+                          title={title} showAmountLeft={true} infoLink={`${pathname}/info`}
+                          reserveLink={`${pathname}/reserve`}/>}
+
+
         </main>)
 }

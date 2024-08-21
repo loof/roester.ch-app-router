@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import styles from "./logo-link.module.css"
+import styles from "../logo-link.module.css"
 export default function LogoLink() {
     return (
         <div className={`${styles.div} text-center sm:mb-0`}>

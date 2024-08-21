@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import {useTheme} from "next-themes";
-import LogoLink from "@/components/logo-link";
+import LogoLink from "@/components/nav-bar/logo-link";
 import MobileMenuButton from "@/components/mobile-menu-button";
-import DesktopNavLinks from "@/components/desktop-nav-links";
-import MobileDrawer from "@/components/mobile-drawer";
+import DesktopNavLinks from "@/components/nav-bar/desktop-nav-links";
+import MobileDrawer from "@/components/nav-bar/mobile-drawer";
 
 export default  function NavBar() {
     const { setTheme } = useTheme()
@@ -16,7 +16,7 @@ export default  function NavBar() {
     };
 
     return (<>
-            <div className="border-b px-6 border-primary-foreground/20 pb-5 hidden container sm:flex flex-row justify-between items-center text-center max-w-screen-sm">
+            <div className="border-b px-6 border-primary-foreground/20 pb-5 hidden container sm:flex flex-row justify-between items-center text-center max-w-screen-lg">
                 <LogoLink />
                 <DesktopNavLinks />
             </div>

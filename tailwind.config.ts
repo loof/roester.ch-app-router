@@ -24,7 +24,7 @@ const config = {
       '9xl': '6.052rem',
     },*/
     container: {
-      center: true,
+      center: true
     },
     extend: {
       colors: {

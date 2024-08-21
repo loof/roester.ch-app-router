@@ -3,11 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
-import NavigationLinks from "@/components/navigation-links";
+import NavigationLinks from "@/components/nav-bar/navigation-links";
+import {useUser} from "@auth0/nextjs-auth0/client";
+import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
 
 
 export default function MobileDrawer({ isOpen, onClose }) {
     const pathname = usePathname()
+
+
     return (
         <div
             className={`fixed flex flex-col pt-20 items-center z-10 top-0 right-0 h-full w-full bg-background text-black transition-transform duration-300 transform ${
@@ -31,7 +35,8 @@ export default function MobileDrawer({ isOpen, onClose }) {
                     })
                 }
 
-                {/* Add other navigation links */}
+                <LoginLogoutListItem className={"text-xl"} />
+
             </ul>
         </div>
     );
