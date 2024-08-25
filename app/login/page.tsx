@@ -19,6 +19,7 @@ import {login} from "@/lib/api/auth-old";
 import { useRouter } from 'next/navigation'
 import {useState} from "react";
 import { useSearchParams } from 'next/navigation'
+import Link from "next/link";
 
 
 const FormSchema = z.object({
@@ -106,9 +107,12 @@ export default function LoginPage() {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Submit</Button>
+                    <Button className={"text-3xl p-8 lowercase font-display"} type="submit">Login</Button>
+                    <Button className={"text-3xl p-8 lowercase font-display"} variant="outline"  asChild><Link href={"/signup"}>Registrieren</Link></Button>
                 </form>
             </Form>
+
+
         </main>
     )
 }
