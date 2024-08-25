@@ -50,7 +50,7 @@ export default function LoginPage() {
 
         try {
             const resp = await login(data)
-            signIn(resp)
+            //signIn(resp)
             if (url) {
                 router.push(url)
             } else {

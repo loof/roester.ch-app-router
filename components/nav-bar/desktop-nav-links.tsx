@@ -28,7 +28,7 @@ export default function DesktopNavLinks() {
                 <LoginLogoutListItem className={"text-xl"} />
             }
 
-            {JSON.stringify(user)}
+       
 
         </ul>
     );

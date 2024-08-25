@@ -12,11 +12,10 @@ export async function getAllEvents(token) {
         throw new Error("An error occurred while fetching")
     }
 
-    const data = await response.json()
-    return data
+    return await response.json()
 }
 
-export async function getNextEvent() {
+export async function getNextRoast() {
     const response = await fetch(`${URL}/events/next`, {
         headers: {
             "content-type": "application/json"
@@ -27,11 +26,10 @@ export async function getNextEvent() {
         throw new Error("An error occurred while fetching")
     }
 
-    const data = await response.json()
-    return data
+    return await response.json()
 }
 
-export async function getLastEvent() {
+export async function getLastRoast() {
     const response = await fetch(`${URL}/events/last`, {
         headers: {
             "content-type": "application/json"

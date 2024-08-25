@@ -2,14 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: "Cheddar";
-    src: url('./fonts/cheddar/CheddarGothicRough-Regular.ttf');
-    font-weight: normal;
-    font-style: normal;
-}
+
 
 @layer base {
+    @font-face {
+        font-family: "Cheddar";
+        src: url('./fonts/cheddar/CheddarGothicRough-Regular.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: "Montserrat";
+        src: url('./fonts/montserrat/Montserrat-Regular.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     :root {
         --background: 0 0% 100%;
         --foreground: 222.2 84% 4.9%;
@@ -65,17 +74,45 @@
         --chart-5: 340 75% 55%;
     }
 
-
-    h1 {
-        font-family: 'Cheddar', sans-serif;
+    h1, h2, h3, h4 {
+        font-family: "Cheddar", sans-serif;
         text-transform: lowercase;
-        font-weight: normal;
         color: hsl(var(--primary));
+        font-size: 4rem;
+        font-weight: normal;
     }
+
+    h3, h4 {
+        font-family: "Montserrat", sans-serif;
+        text-transform: none;
+        font-size: 3rem;
+    }
+
+    h4 {
+        color:hsl(var(--primary-foreground));
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 3.5rem;
+    }
+
+
 
     main {
-      padding-top: 4rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
     }
+
+    p {
+        font-size: 2rem;
+        font-weight: normal;
+    }
+
+
+
 }
 
 @layer base {

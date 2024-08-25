@@ -10,19 +10,13 @@ const config = {
 	],
   prefix: "",
   theme: {
-/*    fontSize: {
-      sm: '1.8rem',
-      base: '1rem',
-      xl: '2.25rem',
-      '2xl': '2.563rem',
-      '3xl': '2.953rem',
-      '4xl': '2.441rem',
-      '5xl': '2.052rem',
-      '6xl': '3.7rem',
-      '7xl': '4.052rem',
-      '8xl': '5.052rem',
-      '9xl': '6.052rem',
-    },*/
+    fontFamily: {
+      'sans': ['Montserrat', 'sans-serif'],
+      'serif': ['Montserrat', 'sans-serif'],
+      'mono': ['Montserrat', 'sans-serif'],
+      'display': ['Cheddar', 'sans-serif'],
+      'body': ['Montserrat', 'sans-serif'],
+    },
     container: {
       center: true
     },

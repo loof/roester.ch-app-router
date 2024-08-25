@@ -1,49 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getAccessToken, withMiddlewareAuthRequired } from '@auth0/nextjs-auth0/edge';
+import {initAuth0, withMiddlewareAuthRequired} from "@auth0/nextjs-auth0/edge"
+import {NextRequest, NextResponse} from "next/server";
+import {handleAuth} from "@auth0/nextjs-auth0";
 
-export default function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
-    console.log(pathname);
-
-    if (pathname.startsWith('/api/v1/user/register')) {
-        console.log('############ REGISTER HANDLER');
-        // do something that does not require auth
-        return NextResponse.next();
-    } else
-    if (pathname.startsWith('/api/v1')) {
-        console.log('############ API HANDLER');
-        withMiddlewareAuthRequired(async function middleware(req) {
-            const res = NextResponse.next();
-            const { accessToken } = await getAccessToken(req, res);
-            const requestHeaders = new Headers(req.headers);
-            requestHeaders.set('Authorization', `Bearer ${accessToken as string}`);
-            const url = `rest api endpoint`;
-            return NextResponse.rewrite(new URL(url), {
-                request: {
-                    headers: requestHeaders,
-                },
-            });
-        });
-    } else if (pathname.startsWith('/api/graphql')) {
-        console.log('############ GQL HANDLER');
-        withMiddlewareAuthRequired(async function middleware(req) {
-            const res = NextResponse.next();
-            const { accessToken } = await getAccessToken(req, res);
-            const requestHeaders = new Headers(req.headers);
-            requestHeaders.set('Authorization', `Bearer ${accessToken as string}`);
-            const url = `graphql api endpoint`;
-            return NextResponse.rewrite(url, {
-                request: {
-                    headers: requestHeaders,
-                },
-            });
-        });
-    } else {
-        console.log('############ EVERYTHING ELSE HANDLER');
-        withMiddlewareAuthRequired();
+export default withMiddlewareAuthRequired({
+    async returnTo(req) {
+        return `${req.nextUrl}`
+    },
+    // Custom middleware is provided with the `middleware` config option
+    async middleware(req) {
         return NextResponse.next();
     }
-}
+});
 // MATCHES ALL PATHS EXCEPT THOSE BELOW, note the `|$` at the end, that will also match the base path (index)
 export const config = {
     matcher: [

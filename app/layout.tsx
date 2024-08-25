@@ -21,7 +21,7 @@ export default function RootLayout(props) {
 
     return (
         <html lang="de" className={fontMontserrat.className}>
-        <body className={"mt-10"}>
+        <body className={"h-screen pt-10 flex flex-col"}>
         <UserProvider>
             <ThemeProvider
                 attribute="class"

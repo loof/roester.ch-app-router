@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {useTheme} from "next-themes";
 import LogoLink from "@/components/nav-bar/logo-link";
-import MobileMenuButton from "@/components/mobile-menu-button";
+import MobileMenuButton from "@/components/nav-bar/mobile-menu-button";
 import DesktopNavLinks from "@/components/nav-bar/desktop-nav-links";
 import MobileDrawer from "@/components/nav-bar/mobile-drawer";
 
@@ -25,9 +25,6 @@ export default  function NavBar() {
                 <MobileMenuButton onClick={handleDrawerToggle} />
                 <MobileDrawer isOpen={isDrawerOpen} onClose={handleDrawerToggle} />
             </div>
-
-
-
         </>
 
     )
