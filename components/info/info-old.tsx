@@ -2,7 +2,7 @@ import styles from "./Info.module.css"
 import Link from "next/link";
 import Image from 'next/image'
 import {Button} from "@/components/ui/button";
-import {formatDate} from "@/lib/utils";
+import {formatDate} from "@/lib/util/utils";
 import {v4 as uuidv4} from 'uuid';
 import Properties from "@/components/properties";
 

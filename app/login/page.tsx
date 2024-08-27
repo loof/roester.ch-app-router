@@ -14,13 +14,11 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {toast} from "@/components/ui/use-toast"
-import {login} from "@/lib/api/auth-old";
-import { useRouter } from 'next/navigation'
 import {useState} from "react";
-import { useSearchParams } from 'next/navigation'
 import Link from "next/link";
-
+import { useSearchParams, useRouter } from 'next/navigation'
+import {signIn} from "next-auth/react";
+import {onFormSubmit} from "@/app/login/_actions/actions";
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -35,7 +33,7 @@ export default function LoginPage() {
     const [model, setModel] = useState({})
     const [isLoading, setLoading] = useState(true)
     const searchParams = useSearchParams()
-    const url = searchParams.get('url')
+    const redirectUrl = searchParams.get('redirect')
     const router = useRouter()
 
 
@@ -48,15 +46,10 @@ export default function LoginPage() {
     })
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-
         try {
-            const resp = await login(data)
-            //signIn(resp)
-            if (url) {
-                router.push(url)
-            } else {
-                router.push("/")
-            }
+            console.log(data)
+            await onFormSubmit(data)
+            router.replace(redirectUrl || '/')
         } catch (e) {
             setErrors({
                 ...errors,

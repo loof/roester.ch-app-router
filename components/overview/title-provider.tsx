@@ -1,4 +1,4 @@
-import {formatDate} from "@/lib/utils";
+import {formatDate} from "@/lib/util/utils";
 
 export default function TitleProvider({date}) {
     if (date === "next") {

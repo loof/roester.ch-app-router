@@ -1,7 +1,7 @@
 import {getLastRoast, getNextRoast} from "@/lib/api/events";
 import Info from "@/components/info/info";
 import BackButton from "@/components/back-button";
-import {formatDate} from "@/lib/utils";
+import {formatDate} from "@/lib/util/utils";
 import H1 from "@/components/info/h1";
 import Description from "@/components/info/description";
 import {v4 as uuidv4} from 'uuid';
