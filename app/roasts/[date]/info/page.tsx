@@ -1,7 +1,6 @@
-import {getLastRoast, getNextRoast} from "@/lib/api/events";
+import {getPrevRoast, getNextRoast, getRoastByDate} from "@/lib/api/events";
 import Info from "@/components/info/info";
-import BackButton from "@/components/back-button";
-import {formatDate} from "@/lib/util/utils";
+import {formatDate} from "@/lib/utils";
 import H1 from "@/components/info/h1";
 import Description from "@/components/info/description";
 import {v4 as uuidv4} from 'uuid';
@@ -9,38 +8,20 @@ import Properties from "@/components/info/properties";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 
-
 export default async function InfoPage({params}: { params: { date: string } }) {
     let roast = {}
     if (params.date === "next") {
         roast = await getNextRoast();
     } else if (params.date === "last") {
-        roast = await getLastRoast();
+        roast = await getPrevRoast();
     } else {
-        // TODO: fetch by date
+        roast = await getRoastByDate(params.date);
     }
-
-    /*const [isLoading, setLoading] = useState(true)
-
-    try {
-        if (params.date === "next") {
-            const new_data = await getNextRoast()
-            setData(new_data)
-            setLoading(false)
-        } else if (params.date === "last") {
-            const new_data = await getLastRoast()
-            setData(new_data)
-            setLoading(false)
-        }
-    } catch (e) {
-        alert("Die Röstung konnte nicht geladen werden. Bitte versuche es erneut.")
-    }*/
-
 
     return (
 
         <main className={"container max-w-screen-lg lg:px-0 items-center lg:items-start flex flex-col pb-10"}>
-            <BackButton className={"mb-8 text-2xl p-6 lowercase max-w-40"}/>
+           {/* <BackButton className={"mb-8 text-2xl p-6 lowercase max-w-40"}/>*/}
             <Info className={"text-center lg:text-left"}>
                 <H1>{`${roast.name ? `${roast.name} ` : ""}${formatDate(roast.date)}`}</H1>
                 <Description className={"pt-5 mb-20"}>{roast.description}</Description>

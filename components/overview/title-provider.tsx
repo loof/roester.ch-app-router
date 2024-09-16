@@ -1,11 +1,11 @@
-import {formatDate} from "@/lib/util/utils";
+import {formatDate} from "@/lib/utils";
 
-export default function TitleProvider({date}) {
-    if (date === "next") {
-        return "Nächste Röstung"
-    } else if (date === "last") {
-        return "Letzte Röstung"
+export default function TitleProvider({roast}) {
+    if (roast.isNext === true) {
+        return `Nächste Röstung ${formatDate(roast.date)}`
+    } else if (roast.isPrev === true) {
+        return `Letzte Röstung ${formatDate(roast.date)}`
     } else {
-        return formatDate(date)
+        return formatDate(roast.date)
     }
 }

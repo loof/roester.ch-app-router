@@ -4,6 +4,7 @@ import {ThemeProvider} from "@/components/theme-provider";
 import localFont from 'next/font/local'
 import NavBar from "@/components/nav-bar/nav-bar";
 import {Toaster} from "@/components/ui/toaster"
+import SessionWrapper from "@/components/session-wrapper";
 
 
 export const metadata: Metadata = {
@@ -20,8 +21,9 @@ const fontMontserrat = localFont({
 export default function RootLayout(props) {
 
     return (
+        <SessionWrapper>
         <html lang="de" className={fontMontserrat.className}>
-        <body className={"h-screen pt-10 flex flex-col"}>
+        <body className={"mt-10"}>
             <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -34,5 +36,6 @@ export default function RootLayout(props) {
             </ThemeProvider>
         </body>
         </html>
+        </SessionWrapper>
     );
 }

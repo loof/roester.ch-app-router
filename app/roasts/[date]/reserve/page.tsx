@@ -1,7 +1,7 @@
-import {getLastRoast, getNextRoast} from "@/lib/api/events";
+import {getPrevRoast, getNextRoast} from "@/lib/api/events";
 import Info from "@/components/info/info";
 import BackButton from "@/components/back-button";
-import {formatDate} from "@/lib/util/utils";
+import {formatDate} from "@/lib/utils";
 import H1 from "@/components/info/h1";
 import Description from "@/components/info/description";
 import {v4 as uuidv4} from 'uuid';
@@ -15,7 +15,7 @@ export default async function InfoPage({params}: { params: { date: string } }) {
     if (params.date === "next") {
         roast = await getNextRoast();
     } else if (params.date === "last") {
-        roast = await getLastRoast();
+        roast = await getPrevRoast();
     } else {
         // TODO: fetch by date
     }

@@ -6,17 +6,18 @@ import LogoLink from "@/components/nav-bar/logo-link";
 import MobileMenuButton from "@/components/nav-bar/mobile-menu-button";
 import DesktopNavLinks from "@/components/nav-bar/desktop-nav-links";
 import MobileDrawer from "@/components/nav-bar/mobile-drawer";
+import { useSession, signIn, signOut } from "next-auth/react"
 
-export default  function NavBar() {
+export default  function NavBar({className}: {className?: string}) {
     const { setTheme } = useTheme()
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+    const { data: session } = useSession()
     const handleDrawerToggle = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
 
     return (<>
-            <div className="border-b px-6 border-primary-foreground/20 pb-5 hidden container sm:flex flex-row justify-between items-center text-center max-w-screen-lg">
+            <div className={`\`border-b px-6 border-primary-foreground/20 pb-5 hidden container sm:flex flex-row justify-between items-center text-center max-w-screen-lg ${className}`}>
                 <LogoLink />
                 <DesktopNavLinks />
             </div>

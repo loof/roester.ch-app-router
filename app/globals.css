@@ -5,6 +5,14 @@
 
 
 @layer base {
+
+    /* Disable up and down buttons for number inputs cause we make our own. */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     @font-face {
         font-family: "Cheddar";
         src: url('./fonts/cheddar/CheddarGothicRough-Regular.ttf');
@@ -78,23 +86,24 @@
         font-family: "Cheddar", sans-serif;
         text-transform: lowercase;
         color: hsl(var(--primary));
-        font-size: 4rem;
+        font-size: 3rem;
         font-weight: normal;
+        line-height: 110%;
     }
 
     h3, h4 {
         font-family: "Montserrat", sans-serif;
         text-transform: none;
-        font-size: 3rem;
+        font-size: 2rem;
     }
 
     h4 {
         color:hsl(var(--primary-foreground));
-        font-size: 2.5rem;
+        font-size: 1.5rem;
     }
 
     h2 {
-        font-size: 3.5rem;
+        font-size: 4.5rem;
     }
 
 

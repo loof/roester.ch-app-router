@@ -6,7 +6,7 @@ import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
 
 export default function DesktopNavLinks() {
     const pathname = usePathname()
-
+    
     return (
         <ul className="flex flex-row space-x-6">
             {
@@ -23,7 +23,8 @@ export default function DesktopNavLinks() {
             }
 
             {
-                <LoginLogoutListItem className={"text-xl"} />
+                !pathname.startsWith("/login") &&
+                 <LoginLogoutListItem className={"text-xl"} />
             }
 
        

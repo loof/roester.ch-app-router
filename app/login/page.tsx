@@ -14,11 +14,9 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from 'next/navigation'
-import {signIn} from "next-auth/react";
-import {onFormSubmit} from "@/app/login/_actions/actions";
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -29,13 +27,19 @@ const FormSchema = z.object({
 })
 
 export default function LoginPage() {
-    const [errors, setErrors] = useState([])
-    const [model, setModel] = useState({})
+    const [errors, setErrors] = useState({})
     const [isLoading, setLoading] = useState(true)
     const searchParams = useSearchParams()
-    const redirectUrl = searchParams.get('redirect')
     const router = useRouter()
+    const [authenticated, setAuthenticated] = useState(false);
 
+    useEffect(() => {
+        if (authenticated) {
+            // Redirect to previous page or home page
+            const next = searchParams.get("next") || "/";
+            window.location.href = next;
+        }
+    }, [authenticated]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -47,22 +51,31 @@ export default function LoginPage() {
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
-            console.log(data)
-            await onFormSubmit(data)
-            router.replace(redirectUrl || '/')
-        } catch (e) {
-            setErrors({
-                ...errors,
-                login: "Login fehlgeschlagen"
-            })
-            setLoading(false)
+            const res = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: data.email, password: data.password, type: "credentials" }),
+            });
+
+            if (res.ok) {
+                setAuthenticated(true);
+            } else {
+                // handle error state here
+                setErrors((prev) => { return {...prev, login: "Ungültiges Login"}});
+            }
+        } catch (error) {
+            // handle error state here
+            console.error("Error during sign-in", error);
+            setErrors((prev) => { return {...prev, login: "Server Fehler"}});
         }
     }
 
     return (
         <main className={"container max-w-md text-center"}>
             <h1 className={"mb-10 text-6xl"}>Login</h1>
-            {errors && errors.length > 0 && <h2>{errors.login}</h2>}
+            {errors && errors.login && <h2>{errors.login}</h2>}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-10 m-10">
                     <FormField

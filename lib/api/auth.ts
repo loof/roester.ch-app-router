@@ -1,4 +1,4 @@
-const URL = process.env.NEXT_PUBLIC_API_URL
+const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export async function login({ email, password }) {
     const response = await fetch(`${URL}/auth/signin`, {

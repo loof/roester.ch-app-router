@@ -1,5 +1,6 @@
 "use server"
-const URL = process.env.NEXT_PUBLIC_API_URL
+
+const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export async function getAllEvents(token) {
     const response = await fetch(`${URL}/events`, {
@@ -30,8 +31,32 @@ export async function getNextRoast() {
     return await response.json()
 }
 
-export async function getLastRoast() {
-    const response = await fetch(`${URL}/events/last`, {
+export async function getRoastByDate(date) {
+    const response = await fetch(`${URL}/events/${date}`, {
+        headers: {
+            "content-type": "application/json"
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error("An error occurred while fetching")
+    }
+
+    return await response.json()
+}
+
+export async function getRoastByPathVariableDate(date) {
+    if (date === "next") {
+        return await getNextRoast()
+    } else if (date === "prev") {
+        return await getPrevRoast()
+    }
+
+    return await getRoastByDate(date)
+}
+
+export async function getPrevRoast() {
+    const response = await fetch(`${URL}/events/prev`, {
         headers: {
             "content-type": "application/json"
         }

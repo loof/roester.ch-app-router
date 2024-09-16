@@ -1,4 +1,4 @@
-import {formatDate} from "@/lib/util/utils";
+import {formatDate} from "@/lib/utils";
 
 export default function DateJumbo({date, className}) {
     let title = {}

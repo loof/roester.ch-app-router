@@ -6,7 +6,7 @@ export default function NavigationLinks() {
             "className": ""
         },
         {
-            "href": "/roasts/last",
+            "href": "/roasts/prev",
             "text": "Letzte Röstung",
             "className": ""
         }
