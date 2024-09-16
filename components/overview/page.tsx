@@ -30,6 +30,7 @@ import {ToggleGroup, ToggleGroupItem} from "@/components/ui/toggle-group";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import Varieties from "@/components/overview/varieties";
 import {v4 as uuidv4} from 'uuid';
+import {toast} from "@/components/ui/use-toast";
 
 const formSchema = z.object({
     variant: z.number().min(1, { message: "Bitte wähle eine Variante aus." }),
@@ -82,20 +83,15 @@ export default function OverviewPage({roast, className}) {
     const [amount, setAmount] = useState(1);
 
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            variant: 0,
-            amount: 1
-        },
-    })
 
-    const {setValue} = form;
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log(values)
+        toast({
+            title: "Auswahl wurde dem Warenkorb hinzugefügt.",
+        })
     }
 
 
@@ -106,13 +102,22 @@ export default function OverviewPage({roast, className}) {
             <>
                 <Overview className={className}>
                     <Title className={"font-sans normal-case"}><TitleProvider roast={roast}/></Title>
-                    <InHowManyDays classNameBigger={"text-4xl mx-3"} className={"normal-case text-3xl mt-12 mx-1"}
+                    <InHowManyDays classNameBigger={"text-4xl mx-3"} className={"normal-case text-3xl mt-6 md:mt-12 mx-1"}
                                    deltaDays={roast.daysToEvent}/>
 
                     <div className={"mt-3 sm:mt-10 flex flex-wrap justify-center gap-20"}>
                         {
                             roast.eventProductAmounts.map((epa) => {
 
+                                const form = useForm<z.infer<typeof formSchema>>({
+                                    resolver: zodResolver(formSchema),
+                                    defaultValues: {
+                                        variant: 0,
+                                        amount: 1
+                                    },
+                                })
+
+                                const {setValue} = form;
 
                                 return (
                                     <div key={uuidv4()}>
@@ -214,7 +219,7 @@ export default function OverviewPage({roast, className}) {
                                                             </div>
                                                         </div>
 
-                                                        <Button type="submit" size="sm">In den Warenkorb</Button>
+                                                        <Button className={"p-6"} type="submit" size="sm">In den Warenkorb</Button>
                                                     </div>
                                                 </form>
                                             </Form>
