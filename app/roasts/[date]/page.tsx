@@ -16,7 +16,7 @@ export default async function RoastsShopPagePage({params}: { params: { date: str
 
     return (
         <main className={"container max-w-screen-lg text-center"}>
-            {!isError && <OverviewPage className={"mt-16"} roast={roast}/>}
+            {!isError && <OverviewPage roast={roast}/>}
             {isError && <p>Es wurde keine Röstung gefunden.</p>}
         </main>
 )

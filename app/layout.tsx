@@ -23,7 +23,7 @@ export default function RootLayout(props) {
     return (
         <SessionWrapper>
         <html lang="de" className={fontMontserrat.className}>
-        <body className={"mt-10"}>
+        <body>
             <ThemeProvider
                 attribute="class"
                 defaultTheme="dark"
@@ -31,7 +31,9 @@ export default function RootLayout(props) {
                 disableTransitionOnChange
             >
                 <NavBar/>
-                {props.children}
+                <div className="pt-48">
+                    {props.children}
+                </div>
                 <Toaster/>
             </ThemeProvider>
         </body>

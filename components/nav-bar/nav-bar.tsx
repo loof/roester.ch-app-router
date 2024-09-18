@@ -17,7 +17,7 @@ export default  function NavBar({className}: {className?: string}) {
     };
 
     return (<>
-            <div className={`\`border-b px-6 border-primary-foreground/20 pb-5 hidden container sm:flex flex-row justify-between items-center text-center max-w-screen-lg ${className}`}>
+            <div className={`fixed z-10 opacity-95 inset-x-0 pt-10 pb-6 mx-auto bg-black border-b px-6 border-primary-foreground/20 hidden sm:flex flex-row justify-between items-center text-center max-w-screen-lg  ${className}`}>
                 <LogoLink />
                 <DesktopNavLinks />
             </div>
