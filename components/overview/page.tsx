@@ -1,5 +1,6 @@
 "use client"
 
+import { useAtom } from 'jotai'
 import Overview from "@/components/overview/overview";
 import Title from "@/components/overview/title";
 import TitleProvider from "@/components/overview/title-provider";
@@ -31,6 +32,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import Varieties from "@/components/overview/varieties";
 import {v4 as uuidv4} from 'uuid';
 import {toast} from "@/components/ui/use-toast";
+import {cartAtom} from "@/app/atoms/shopping-cart-atom";
 
 const formSchema = z.object({
     variant: z.number().min(1, { message: "Bitte wähle eine Variante aus." }),
@@ -80,8 +82,7 @@ function PlusIcon(props) {
 type formSchemaType = z.infer<typeof formSchema>;
 
 export default function OverviewPage({roast, className}) {
-    const [amount, setAmount] = useState(1);
-
+    const [numberOfItems, setNumberOfItems] = useAtom(cartAtom)
 
 
 
@@ -92,6 +93,8 @@ export default function OverviewPage({roast, className}) {
         toast({
             title: "Auswahl wurde dem Warenkorb hinzugefügt.",
         })
+
+
     }
 
 

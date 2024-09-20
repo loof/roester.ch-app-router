@@ -3,7 +3,7 @@ import NavigationLinks from "@/components/nav-bar/navigation-links";
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
 import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
-import ShoppingCartIcon from "@/components/shopping-cart-item";
+import ShoppingCartIcon from "@/components/shopping-cart-icon";
 
 export default function DesktopNavLinks() {
     const pathname = usePathname()
@@ -28,7 +28,7 @@ export default function DesktopNavLinks() {
                  <LoginLogoutListItem className={"text-xl"} />
             }
 
-            <li><ShoppingCartIcon itemCount={5}/></li>
+            <li><ShoppingCartIcon itemCount={0}/></li>
 
         </ul>
     );
