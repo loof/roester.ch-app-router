@@ -33,9 +33,10 @@ import Varieties from "@/components/overview/varieties";
 import {v4 as uuidv4} from 'uuid';
 import {toast} from "@/components/ui/use-toast";
 import {cartAtom} from "@/app/atoms/shopping-cart-atom";
+import {useShoppingCart} from "@/app/hooks/shopping-cart";
 
 const formSchema = z.object({
-    variant: z.number().min(1, { message: "Bitte wähle eine Variante aus." }),
+    variantId: z.number().min(1, { message: "Bitte wähle eine Variante aus." }),
     amount: z.number().min(1, { message: "Bitte wähle eine Menge aus." }),
 });
 
@@ -82,21 +83,23 @@ function PlusIcon(props) {
 type formSchemaType = z.infer<typeof formSchema>;
 
 export default function OverviewPage({roast, className}) {
+    const {shoppingCartItems, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const [numberOfItems, setNumberOfItems] = useAtom(cartAtom)
 
-
+    const { data: session, status } = useSession()
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+        addShoppingCartItem({
+            cartId: session?.user.cartId,
+            eventId: roast.id,
+            variantId: values.variantId,
+            amount: values.amount,
+        })
+
         toast({
             title: "Auswahl wurde dem Warenkorb hinzugefügt.",
         })
-
-
     }
-
 
 
     return (<>
@@ -115,7 +118,7 @@ export default function OverviewPage({roast, className}) {
                                 const form = useForm<z.infer<typeof formSchema>>({
                                     resolver: zodResolver(formSchema),
                                     defaultValues: {
-                                        variant: 0,
+                                        variantId: 0,
                                         amount: 1
                                     },
                                 })
@@ -141,7 +144,7 @@ export default function OverviewPage({roast, className}) {
 
                                                         <FormField
                                                             control={form.control}
-                                                            name="variant"
+                                                            name="variantId"
                                                             render={({ field }) => (
                                                                 <FormItem>
                                                                     <FormLabel className={"text-xl"}>wähle aus:</FormLabel>

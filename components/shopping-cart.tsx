@@ -15,6 +15,8 @@ const ShoppingCart = () => {
             if (savedCart) {
                 setCart(JSON.parse(savedCart));
             }
+        } else {
+
         }
     }, [isAuthenticated]);
 
