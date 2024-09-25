@@ -111,7 +111,7 @@ export function useShoppingCart() {
     };
 
     return {
-        shoppingCartItems,
+        cart,
         addShoppingCartItem,
         removeShoppingCartItem,
     };
