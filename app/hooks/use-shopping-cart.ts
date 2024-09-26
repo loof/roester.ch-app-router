@@ -1,9 +1,10 @@
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { cartAtom } from "@/app/atoms/shopping-cart-atom";
-import { createCartItems, getCartItems, updateCartItem } from "@/lib/api/shopping-cart";
-import {update} from "next-auth/lib/actions";
+import {useSession} from "next-auth/react";
+import {useEffect, useState} from "react";
+import {useAtom} from "jotai";
+import {cartAtom} from "@/app/atoms/shopping-cart-atom";
+import {createCartItems, getCart} from "@/lib/api/shopping-cart";
+import {CartItem} from "@/types/cart-item";
+import {Cart} from "@/types/cart";
 
 const LOCAL_STORAGE_KEY = 'shopping_cart';
 
@@ -16,27 +17,26 @@ export function useShoppingCart() {
     // Load cart from local storage for unauthenticated users or server for authenticated users
     useEffect(() => {
         const fetchData = async () => {
+            const localCart = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (!isAuthenticated) {
-                const savedCart = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (savedCart) {
-                    const parsedCart = JSON.parse(savedCart);
+                if (localCart) {
+                    const parsedCart = JSON.parse(localCart);
                     setCart(parsedCart);
                 }
             } else if (isAuthenticated && session.user.accessToken && session.user.cartId) {
                 try {
-                    let dbCart = await getCartItems(session.user.accessToken, session.user.cartId);
-                    const localCart = localStorage.getItem(LOCAL_STORAGE_KEY);
-                    let combinedCart = dbCart;
-
                     if (localCart) {
                         const parsedLocalCart = JSON.parse(localCart);
 
-                        if (parsedLocalCart.length > 0) {
-                            const cart =  await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart);
+                        if (parsedLocalCart.items.length > 0) {
+                            const cart =  await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart.items);
                             setCart(cart)
                         }
 
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    } else {
+                        const dbCart = await getCart(session.user.accessToken, session.user.cartId);
+                        setCart(dbCart)
                     }
 
                 } catch (error) {
@@ -61,15 +61,12 @@ export function useShoppingCart() {
     }, [cart, isAuthenticated]);
 
     // Add or update item in the shopping cart
-    const addShoppingCartItem = async (cartItem) => {
-        const existingItem = cart.items.find(
-            (item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId
-        );
+    const addShoppingCartItem = async (cartItem: CartItem) => {
 
         if (isAuthenticated && session?.user?.accessToken && session?.user?.cartId && !isSyncing){
             setIsSyncing(true);  // Start syncing process
             try {
-                const newCart = await createCartItems(session.user.accessToken, session.user.cartId, [cart.items]);
+                const newCart = await createCartItems(session.user.accessToken, session.user.cartId, [cartItem]);
                 setCart(newCart)
             } catch (error) {
                 console.error("Error syncing cart item to server", error);
@@ -77,34 +74,27 @@ export function useShoppingCart() {
                 setIsSyncing(false);  // Syncing finished
             }
         } else if (!isAuthenticated) {
-            setCart((prevCart) => {
-                const updatedCart = [...prevCart];
-                const existingItemIndex = updatedCart.items.findIndex(
-                    (item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId
-                );
-
-                if (existingItemIndex !== -1) {
-                    updatedCart.items[existingItemIndex].amount += cartItem.amount;
+            setCart((prevCart : Cart) => {
+                const updatedCart : Cart = {...prevCart};
+                const existingItem = prevCart.items.find((item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId)
+                if (existingItem) {
+                    existingItem.amount += cartItem.amount;
                 } else {
-                    updatedCart.push(cartItem);
+                    updatedCart.items.push(cartItem);
                 }
 
                 return updatedCart;
-            });
+
+            })
         }
     };
 
     // Remove item from the shopping cart
     const removeShoppingCartItem = (id) => {
-        setShoppingCartItems((prevCartItems) => {
-            const updatedCartItems = prevCartItems.filter((item) => item.id !== id);
-            const removedItem = prevCartItems.find((item) => item.id === id);
-
-            if (removedItem) {
-                setCart((prev) => prev - 1);
-            }
-
-            return updatedCartItems;
+        setCart((prevCart : Cart) => {
+            const newCart: Cart = {...prevCart};
+            newCart.items = prevCart.items.filter((item) => item.id !== id);
+            return newCart;
         });
 
         // Optionally, add code here to remove the item from the server if authenticated

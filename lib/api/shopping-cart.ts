@@ -1,7 +1,7 @@
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 
-export async function getCartItems(token, cartId) {
+export async function getCart(token, cartId) {
     const response = await fetch(`${URL}/carts/${cartId}`, {
         headers: {
             "content-type": "application/json",
@@ -15,7 +15,7 @@ export async function getCartItems(token, cartId) {
 
     const data = await response.json()
 
-    return data.items
+    return data
 }
 
 export async function createCartItems(token, cartId, cartItems) {

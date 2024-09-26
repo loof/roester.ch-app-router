@@ -23,17 +23,20 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {useEffect, useState} from "react";
-import {useSearchParams, useRouter} from 'next/navigation'
 import {useSession} from "next-auth/react";
-import ShoppingCart from "@/components/shopping-cart";
 import {ToggleGroup, ToggleGroupItem} from "@/components/ui/toggle-group";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import Varieties from "@/components/overview/varieties";
 import {v4 as uuidv4} from 'uuid';
 import {toast} from "@/components/ui/use-toast";
 import {cartAtom} from "@/app/atoms/shopping-cart-atom";
-import {useShoppingCart} from "@/app/hooks/shopping-cart";
+import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
+import {CartItem} from "@/types/cart-item";
+import {session} from "@auth/core/lib/actions";
+import {Variant} from "@/types/variant";
+import {DisplayUnit} from "@/types/display-unit";
+import {Roast} from "@/types/roast";
+import {getVariantById} from "@/lib/api/variants";
+
 
 const formSchema = z.object({
     variantId: z.number().min(1, { message: "Bitte wähle eine Variante aus." }),
@@ -83,21 +86,24 @@ function PlusIcon(props) {
 type formSchemaType = z.infer<typeof formSchema>;
 
 export default function OverviewPage({roast, className}) {
-    const {shoppingCartItems, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
-    const [numberOfItems, setNumberOfItems] = useAtom(cartAtom)
+    const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
 
     const { data: session, status } = useSession()
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        addShoppingCartItem({
-            cartId: session?.user.cartId,
-            eventId: roast.id,
-            variantId: values.variantId,
-            amount: values.amount,
-        })
 
-        toast({
-            title: "Auswahl wurde dem Warenkorb hinzugefügt.",
+        getVariantById(values.variantId).then(dbVariant => {
+            addShoppingCartItem({
+                id: 0,
+                eventId: roast.id,
+                variantId: dbVariant.id,
+                amount: values.amount,
+                variant: dbVariant
+            }).then(() => {
+                toast({
+                    title: "Auswahl wurde dem Warenkorb hinzugefügt.",
+                })
+            })
         })
     }
 
@@ -115,6 +121,7 @@ export default function OverviewPage({roast, className}) {
                         {
                             roast.eventProductAmounts.map((epa) => {
 
+                                // eslint-disable-next-line react-hooks/rules-of-hooks
                                 const form = useForm<z.infer<typeof formSchema>>({
                                     resolver: zodResolver(formSchema),
                                     defaultValues: {
@@ -149,7 +156,10 @@ export default function OverviewPage({roast, className}) {
                                                                 <FormItem>
                                                                     <FormLabel className={"text-xl"}>wähle aus:</FormLabel>
                                                                     <FormControl>
-                                                                        <ToggleGroup onValueChange={field.onChange} defaultValue={field.value} type="single" variant="outline">
+                                                                        <ToggleGroup onValueChange={(e) => {
+                                                                            field.onChange(e)}
+
+                                                                        } defaultValue={field.value} type="single" variant="outline">
                                                                             {epa.product.variants.map((v) => {
                                                                                 return <ToggleGroupItem className={"text-xl"} key={uuidv4()}
                                                                                                         value={v.id}>{v.name}{v.displayUnit.name}</ToggleGroupItem>
