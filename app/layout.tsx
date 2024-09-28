@@ -31,7 +31,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
                 disableTransitionOnChange
             >
                 <NavBar/>
-                <div className="pt-48">
+                <div className="pt-16 sm:pt-44">
                     {children}
                 </div>
                 <Toaster/>

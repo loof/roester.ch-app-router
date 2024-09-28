@@ -31,6 +31,7 @@ import {toast} from "@/components/ui/use-toast";
 import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
 import {Roast} from "@/types/roast";
 import {Variant} from "@/types/variant";
+import useVariantMap from "@/app/hooks/use-variants";
 
 
 const formSchema = z.object({
@@ -86,21 +87,7 @@ type formSchemaType = z.infer<typeof formSchema>;
 export default function OverviewPage({roast, className}: {roast: Roast, className?: string}) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const { data: session, status } = useSession()
-
-    const variantMap = new Map();
-    roast.eventProductAmounts.forEach(productAmount => {
-        const product = productAmount.product;
-
-        // Check if the product has variants
-        if (product.variants && product.variants.length > 0) {
-            product.variants.forEach(variant => {
-                // Store variant in the Map using its id as the key
-                if (!variantMap.has(variant.id)) {
-                    variantMap.set(variant.id, variant);
-                }
-            });
-        }
-    });
+    const {variantMap} = useVariantMap(roast)
 
     function onSubmit(values: z.infer<typeof formSchema>) {
             const variantId = Number(values.variantId); // Convert to number here
