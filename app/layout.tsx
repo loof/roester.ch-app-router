@@ -18,7 +18,7 @@ const fontMontserrat = localFont({
 })
 
 
-export default function RootLayout(props) {
+export default function RootLayout({children}: { children: React.ReactNode }) {
 
     return (
         <SessionWrapper>
@@ -32,7 +32,7 @@ export default function RootLayout(props) {
             >
                 <NavBar/>
                 <div className="pt-48">
-                    {props.children}
+                    {children}
                 </div>
                 <Toaster/>
             </ThemeProvider>

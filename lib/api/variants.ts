@@ -1,8 +1,10 @@
 "use server"
 
+import {Variant} from "@/types/variant";
+
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export async function getAllVariants(token) {
+export async function getAllVariants(token: string) {
     const response = await fetch(`${URL}/variants`, {
         headers: {
             "content-type": "application/json",
@@ -17,7 +19,7 @@ export async function getAllVariants(token) {
     return await response.json()
 }
 
-export async function getVariantById(id) {
+export async function getVariantById(id: number) {
     const response = await fetch(`${URL}/variants/${id}`, {
         headers: {
             "content-type": "application/json",
@@ -31,7 +33,7 @@ export async function getVariantById(id) {
     return await response.json()
 }
 
-export async function createVariant(token, variantData) {
+export async function createVariant(token: string, variantData: Variant) {
     const response = await fetch(`${URL}/variants`, {
         method: 'POST',
         headers: {
@@ -48,7 +50,7 @@ export async function createVariant(token, variantData) {
     return await response.json()
 }
 
-export async function updateVariant(token, id, variantData) {
+export async function updateVariant(token: string, id: number, variantData: Variant) {
     const response = await fetch(`${URL}/variants/${id}`, {
         method: 'PATCH',
         headers: {
@@ -65,7 +67,7 @@ export async function updateVariant(token, id, variantData) {
     return await response.json()
 }
 
-export async function deleteVariant(token, id) {
+export async function deleteVariant(token: string, id: number) {
     const response = await fetch(`${URL}/variants/${id}`, {
         method: 'DELETE',
         headers: {

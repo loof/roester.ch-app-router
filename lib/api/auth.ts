@@ -1,6 +1,6 @@
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export async function login({ email, password }) {
+export async function login({ email, password } : {email: string, password: string}) {
     const response = await fetch(`${URL}/auth/signin`, {
         method: "POST",
         headers: {

@@ -8,69 +8,64 @@ import {v4 as uuidv4} from 'uuid';
 import Properties from "@/components/info/properties";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {Roast} from "@/types/roast";
 
 
 export default async function InfoPage({params}: { params: { date: string } }) {
-    let roast = {}
-    if (params.date === "next") {
-        roast = await getNextRoast();
-    } else if (params.date === "last") {
-        roast = await getPrevRoast();
-    } else {
-        // TODO: fetch by date
-    }
-
-    /*const [isLoading, setLoading] = useState(true)
+    let roast: Roast | null = null;  // Initialize roast as null
+    let isError = false;
 
     try {
         if (params.date === "next") {
-            const new_data = await getNextRoast()
-            setData(new_data)
-            setLoading(false)
+            roast = await getNextRoast();
         } else if (params.date === "last") {
-            const new_data = await getLastRoast()
-            setData(new_data)
-            setLoading(false)
+            roast = await getPrevRoast();
+        } else {
+            // TODO: fetch roast by specific date if applicable
+            // For now, handle this case if no valid date format is provided
+            isError = true;
         }
-    } catch (e) {
-        alert("Die Röstung konnte nicht geladen werden. Bitte versuche es erneut.")
-    }*/
-
+    } catch (error) {
+        isError = true;  // Set error flag if any issues occur
+    }
 
     return (
-
         <main className={"container max-w-screen-lg lg:px-0 items-center lg:items-start flex flex-col pb-10"}>
             <BackButton className={"mb-8 text-2xl p-6 lowercase max-w-40"}/>
-            <Info className={"text-center lg:text-left"}>
-                <H1>{`${roast.name ? `${roast.name} ` : ""}${formatDate(roast.date)}`}</H1>
-                <Description className={"pt-5 mb-20"}>{roast.description}</Description>
-                {roast.eventProductAmounts.map((epa) => {
-                    return (<>
-                        <h2 key={uuidv4()}>{epa.product.madeOf && epa.product.madeOf.length === 0 ? `100% ${epa.product.tags.find(t => {
-                            return t.name === "Arabica" || t.name === "Robusta"
-                        }).name} ` : ""}{epa.product.name}</h2>
-                        <p className={"mb-20"}>{epa.product.description}</p>
+            {!isError && roast && (
+                <Info className={"text-center lg:text-left"}>
+                    <H1>{`${roast.name ? `${roast.name} ` : ""}${formatDate(roast.date)}`}</H1>
+                    <Description className={"pt-5 mb-20"}>{roast.description}</Description>
+                    {roast.eventProductAmounts.map((epa) => {
+                        return (
+                            <div key={uuidv4()}>
+                                <h2>{epa.product.madeOf && epa.product.madeOf.length === 0 ? `100% ${epa.product.tags.find(t => t.name === "Arabica" || t.name === "Robusta")?.name} ` : ""}{epa.product.name}</h2>
+                                <p className={"mb-20"}>{epa.product.description}</p>
 
-                        {epa.product.madeOf && epa.product.madeOf.length > 0 && (
-                            epa.product.madeOf.map((p) => {
-                                return <>
-                                    <h3 key={uuidv4()}>{p.amount}% {p.part.name}</h3>
-                                    <p className={"mb-20"}>{p.part.description}</p>
-                                    {
-                                        <Properties properties={p.part.properties}/>
-                                    }
-                                </>
-                            })
-                        )}
-                        {epa.product.madeOf && epa.product.madeOf.length === 0 && (
-                            <Properties properties={epa.product.properties}/>
-                        )}
-                    </>)
-                })}
-            </Info>
+                                {epa.product.madeOf && epa.product.madeOf.length > 0 && (
+                                    epa.product.madeOf.map((p) => (
+                                        <div key={uuidv4()}>
+                                            <h3>{p.amount}% {p.part.name}</h3>
+                                            <p className={"mb-20"}>{p.part.description}</p>
+                                            <Properties properties={p.part.properties}/>
+                                        </div>
+                                    ))
+                                )}
+                                {epa.product.madeOf && epa.product.madeOf.length === 0 && (
+                                    <Properties properties={epa.product.properties}/>
+                                )}
+                            </div>
+                        );
+                    })}
+                </Info>
+            )}
+            {isError && <p>Die Röstung konnte nicht geladen werden. Bitte versuche es erneut.</p>}
 
-            {roast.isReservationOpen &&
-                <Button asChild className={"font-display my-4 text-4xl p-8 lowercase"}><Link href={`/roasts/${params.date}/reserve`}>Reservieren</Link></Button>}
-
-        </main>)
+            {roast?.isReservationOpen && (
+                <Button asChild className={"font-display my-4 text-4xl p-8 lowercase"}>
+                    <Link href={`/roasts/${params.date}/reserve`}>Reservieren</Link>
+                </Button>
+            )}
+        </main>
+    );
 }

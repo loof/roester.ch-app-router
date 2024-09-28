@@ -1,8 +1,10 @@
 "use server"
 
+import {Roast} from "@/types/roast";
+
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export async function getAllEvents(token) {
+export async function getAllEvents(token: string): Promise<Event[]> {
     const response = await fetch(`${URL}/events`, {
         headers: {
             "content-type": "application/json",
@@ -31,7 +33,7 @@ export async function getNextRoast() {
     return await response.json()
 }
 
-export async function getRoastByDate(date) {
+export async function getRoastByDate(date: string) : Promise<Roast> {
     const response = await fetch(`${URL}/events/${date}`, {
         headers: {
             "content-type": "application/json"
@@ -45,7 +47,7 @@ export async function getRoastByDate(date) {
     return await response.json()
 }
 
-export async function getRoastByPathVariableDate(date) {
+export async function getRoastByPathVariableDate(date: string) {
     if (date === "next") {
         return await getNextRoast()
     } else if (date === "prev") {
@@ -70,7 +72,7 @@ export async function getPrevRoast() {
     return data
 }
 
-export async function getEventById(id) {
+export async function getEventById(id: number) {
     const response = await fetch(`${URL}/events/${id}`)
 
     if (!response.ok) {

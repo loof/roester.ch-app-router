@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {signOut, useSession} from "next-auth/react";
 
-export default function LoginLogoutListItem({className}) {
+export default function LoginLogoutListItem({className} : {className?: string}) {
     const pathname = usePathname();
     const { data: session } = useSession();
     const [isLoggedIn, setLoggedIn] = useState(false);

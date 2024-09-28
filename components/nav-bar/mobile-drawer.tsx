@@ -4,11 +4,10 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
 import NavigationLinks from "@/components/nav-bar/navigation-links";
-import {useUser} from "@auth0/nextjs-auth0/client";
 import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
 
 
-export default function MobileDrawer({ isOpen, onClose }) {
+export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onClose: () => void}) {
     const pathname = usePathname()
 
 

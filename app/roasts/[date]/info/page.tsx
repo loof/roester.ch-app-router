@@ -7,9 +7,10 @@ import {v4 as uuidv4} from 'uuid';
 import Properties from "@/components/info/properties";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {Roast} from "@/types/roast";
 
 export default async function InfoPage({params}: { params: { date: string } }) {
-    let roast = {}
+    let roast : Roast
     if (params.date === "next") {
         roast = await getNextRoast();
     } else if (params.date === "last") {
@@ -29,7 +30,7 @@ export default async function InfoPage({params}: { params: { date: string } }) {
                     return (<>
                         <h2 key={uuidv4()}>{epa.product.madeOf && epa.product.madeOf.length === 0 ? `100% ${epa.product.tags.find(t => {
                             return t.name === "Arabica" || t.name === "Robusta"
-                        }).name} ` : ""}{epa.product.name}</h2>
+                        })?.name} ` : ""}{epa.product.name}</h2>
                         <p className={"mb-20"}>{epa.product.description}</p>
 
                         {epa.product.madeOf && epa.product.madeOf.length > 0 && (

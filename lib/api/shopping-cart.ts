@@ -1,7 +1,9 @@
+import {CartItem} from "@/types/cart-item";
+
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 
-export async function getCart(token, cartId) {
+export async function getCart(token: string, cartId: number) {
     const response = await fetch(`${URL}/carts/${cartId}`, {
         headers: {
             "content-type": "application/json",
@@ -18,7 +20,7 @@ export async function getCart(token, cartId) {
     return data
 }
 
-export async function createCartItems(token, cartId, cartItems) {
+export async function createCartItems(token: string, cartId: number, cartItems: CartItem[]) {
     const response = await fetch(`${URL}/carts/${cartId}/items`, {
         method: "POST",
         headers: {
@@ -36,7 +38,7 @@ export async function createCartItems(token, cartId, cartItems) {
     return data
 }
 
-export async function updateCartItem(token, cartItem) {
+export async function updateCartItem(token: string, cartItem: CartItem) {
     const response = await fetch(`${URL}/carts/${cartItem.cartId}/items`, {
         method: "PATCH",
         headers: {

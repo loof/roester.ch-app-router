@@ -4,19 +4,11 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {z} from "zod"
 import {Button} from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {useEffect, useState} from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -26,18 +18,20 @@ const FormSchema = z.object({
 
 })
 
+// Define the shape of the `errors` state
+interface ErrorsState {
+    login?: string; // login is optional
+}
+
 export default function LoginPage() {
-    const [errors, setErrors] = useState({})
-    const [isLoading, setLoading] = useState(true)
+    const [errors, setErrors] = useState<ErrorsState>({})
     const searchParams = useSearchParams()
-    const router = useRouter()
     const [authenticated, setAuthenticated] = useState(false);
 
     useEffect(() => {
         if (authenticated) {
             // Redirect to previous page or home page
-            const next = searchParams.get("next") || "/";
-            window.location.href = next;
+            window.location.href = searchParams.get("next") || "/";
         }
     }, [authenticated]);
 

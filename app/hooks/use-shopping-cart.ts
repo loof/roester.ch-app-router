@@ -17,39 +17,47 @@ export function useShoppingCart() {
     // Load cart from local storage for unauthenticated users or server for authenticated users
     useEffect(() => {
         const fetchData = async () => {
+            if (isSyncing) return;  // Prevent multiple sync attempts
+
             const localCart = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (!isAuthenticated) {
                 if (localCart) {
                     const parsedCart = JSON.parse(localCart);
                     setCart(parsedCart);
                 }
-            } else if (isAuthenticated && session.user.accessToken && session.user.cartId) {
+            } else if (isAuthenticated && session?.user?.accessToken && session.user.cartId) {
                 try {
                     if (localCart) {
+                        setIsSyncing(true);  // Prevent further execution until sync is done
                         const parsedLocalCart = JSON.parse(localCart);
 
                         if (parsedLocalCart.items.length > 0) {
-                            const cart =  await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart.items);
-                            setCart(cart)
+                            const cart = await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart.items);
+                            setCart(cart);
                         }
 
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
                     } else {
                         const dbCart = await getCart(session.user.accessToken, session.user.cartId);
-                        setCart(dbCart)
+                        setCart(dbCart);
                     }
-
                 } catch (error) {
                     console.error("Error fetching cart items", error);
+                } finally {
+                    setIsSyncing(false);  // Mark sync as complete
                 }
             }
         };
 
-        fetchData();
-    }, [isAuthenticated, session]);
+        if (!isSyncing) {
+            fetchData();  // Only fetch if not currently syncing
+        }
+    }, [isAuthenticated, session, isSyncing]);  // Include isSyncing to trigger on changes to it
+
 
     // Save cart to local storage for unauthenticated users
     useEffect(() => {
+
         async function loadData() {
 
             if (!isAuthenticated && cart.items.length > 0) {
@@ -74,9 +82,9 @@ export function useShoppingCart() {
                 setIsSyncing(false);  // Syncing finished
             }
         } else if (!isAuthenticated) {
-            setCart((prevCart : Cart) => {
-                const updatedCart : Cart = {...prevCart};
-                const existingItem = prevCart.items.find((item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId)
+            setCart((prevCart : Cart ) => {
+                const updatedCart : Cart  = {...prevCart};
+                const existingItem  = prevCart.items.find((item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId)
                 if (existingItem) {
                     existingItem.amount += cartItem.amount;
                 } else {
@@ -90,7 +98,7 @@ export function useShoppingCart() {
     };
 
     // Remove item from the shopping cart
-    const removeShoppingCartItem = (id) => {
+    const removeShoppingCartItem = (id: number) => {
         setCart((prevCart : Cart) => {
             const newCart: Cart = {...prevCart};
             newCart.items = prevCart.items.filter((item) => item.id !== id);

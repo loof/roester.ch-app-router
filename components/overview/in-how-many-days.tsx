@@ -1,4 +1,4 @@
-export default function InHowManyDays({deltaDays, className, classNameBigger}) {
+export default function InHowManyDays({deltaDays, className, classNameBigger} : {deltaDays: number, className?: string, classNameBigger?: string}) {
     const prefix = deltaDays > 0 ? "in" : "war vor"
 
     return (

@@ -5,5 +5,6 @@ export type CartItem = {
     eventId: number;
     variantId: number;
     amount: number;
+    cartId?: number;
     variant: Variant;
 }

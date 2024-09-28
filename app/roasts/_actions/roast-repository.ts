@@ -1,7 +1,7 @@
 
 import {getPrevRoast, getNextRoast, getRoastByDate} from "@/lib/api/events";
 
-export async function getByDate({date}) {
+export async function getByDate({date}: { date: string }) {
     let roast = null
     if (date === "next") {
         roast = await getNextRoast();

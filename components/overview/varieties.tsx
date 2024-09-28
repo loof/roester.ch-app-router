@@ -1,24 +1,34 @@
+import { v4 as uuidv4 } from 'uuid';
+import { EventProductAmount } from "@/types/event-product-amount";
 
-
-import {v4 as uuidv4} from 'uuid';
-
-export default function Varieties({eventProductAmount, className}) {
+export default function Varieties({ eventProductAmount, className }: { eventProductAmount: EventProductAmount, className?: string }) {
+    // Extract product for easier reference
+    const { product } = eventProductAmount;
 
     return (
-        eventProductAmount && <><p>{eventProductAmount.product.madeOf && eventProductAmount.product.madeOf.length === 0 ? `100% ${eventProductAmount.product.tags.find(t => {
-                        return t.name === "Arabica" || t.name === "Robusta"
-                    }).name} ` : ""}</p>
+        <>
+            {/* Display the 100% Arabica or Robusta message */}
+            {product && product.tags.length > 0 && (
+                <p>
+                    {(!product.madeOf || product.madeOf.length === 0) ?
+                        `100% ${product.tags.find(t => t.name === "Arabica" || t.name === "Robusta")?.name || "Unknown"}`
+                        : ""}
+                </p>
+            )}
 
-            {
-                eventProductAmount.product.madeOf && eventProductAmount.product.madeOf.length > 0 &&
-                    eventProductAmount.product.madeOf.map((p) => {
-                        return (<p key={uuidv4()}>{p.amount}% {p.part.tags.find(t => {return t.name === "Arabica" || t.name === "Robusta"}).name}<br/></p>)
-                        })
+            {/* Display the madeOf details */}
+            {product.madeOf && product.madeOf.length > 0 &&
+                product.madeOf.map((p) => {
+                    // Use optional chaining to avoid errors when accessing tags
+                    const tagName = p.part?.tags?.find(t => t.name === "Arabica" || t.name === "Robusta")?.name || "Unknown";
+
+                    return (
+                        <p key={uuidv4()}>
+                            {p.amount}% {tagName}<br />
+                        </p>
+                    );
+                })
             }
-
-
-
         </>
-    )
-
+    );
 }

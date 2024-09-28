@@ -15,7 +15,7 @@ export default async function RoastsPage({params}: { params: { date: string } })
     return (
         <main className={"container max-w-screen-lg text-center font-display flex flex-col gap-16 lowercase h-full"}>
 
-            {!isError && <OverviewPage roast={roast} date={params.date} />}
+            {!isError && <OverviewPage className={""} roast={roast} />}
 
             {isError && <><h1>Fehler</h1><p>Die Daten konnten nicht geladen Werden. <br/>Versuche es nochmals.</p></>}
 

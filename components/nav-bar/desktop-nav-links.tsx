@@ -28,7 +28,7 @@ export default function DesktopNavLinks() {
                  <LoginLogoutListItem className={"text-xl"} />
             }
 
-            <li><ShoppingCartIcon itemCount={0}/></li>
+            <li><ShoppingCartIcon /></li>
 
         </ul>
     );
