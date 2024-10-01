@@ -12,9 +12,7 @@ export default function Varieties({ eventProductAmount, className }: { eventProd
             {/* Display the 100% Arabica or Robusta message */}
             {product && product.tags.length > 0 && (
                 <p>
-                    {(!product.madeOf || product.madeOf.length === 0) ?
-                        `100% ${product.tags.find((t : Tag) => t.name === "arabica" || t.name === "robusta")?.name || "Unbekannt"}`
-                        : ""}
+                    {(!product.madeOf || product.madeOf.length === 0) ? <span className={"capitalize"}>100% {product.tags.find((t : Tag) => t.name === "arabica" || t.name === "robusta")?.name || "Unbekannt"}</span> : ""}
                 </p>
             )}
 
@@ -26,7 +24,7 @@ export default function Varieties({ eventProductAmount, className }: { eventProd
 
                     return (
                         <p key={uuidv4()}>
-                            {p.amount}% {tagName}<br />
+                            {p.amount}% <span className={"capitalize"}>{tagName}</span><br />
                         </p>
                     );
                 })
