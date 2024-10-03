@@ -38,6 +38,7 @@ import {EventProductAmount} from "@/types/event-product-amount";
 const formSchema = z.object({
     variantId: z.number().min(1, {message: "Bitte wähle eine Variante aus."}),
     amount: z.number().min(1, {message: "Bitte wähle eine Menge aus."}),
+    price: z.number().min(0, {message: "Preis kann nicht negativ sein."}),
 });
 
 interface MinusIconProps extends React.SVGProps<SVGSVGElement> {
@@ -86,8 +87,6 @@ const PlusIcon: React.FC<PlusIconProps> = (props) => {
     )
 }
 
-type formSchemaType = z.infer<typeof formSchema>;
-
 export default function OverviewPage({roast, className}: { roast: Roast, className?: string }) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const {data: session, status} = useSession()
@@ -110,7 +109,6 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
 
     }
 
-
     return (<>
 
         {roast.date &&
@@ -132,7 +130,8 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                         resolver: zodResolver(formSchema),
                                         defaultValues: {
                                             variantId: 0,
-                                            amount: 1
+                                            amount: 1,
+                                            price: 0
                                         },
                                     })
 
@@ -164,7 +163,12 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                 aus:</FormLabel>
                                                                             <FormControl>
                                                                                 <ToggleGroup onValueChange={(e) => {
+                                                                                    if (parseInt(e)) {
+                                                                                        setValue("price", variantMap.get(parseInt(e)).price * form.getValues().amount)
+                                                                                    }
+
                                                                                     field.onChange(e ? Number(e) : undefined);
+
                                                                                 }
 
                                                                                 } defaultValue={`${field.value}`}
@@ -185,7 +189,25 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
 
                                                                 <div
                                                                     className="flex mt-10 items-center justify-between">
-                                                                    <span className="text-2xl font-bold">$79.99</span>
+                                                                    <span className="text-2xl font-bold">
+
+
+                                                                        <FormField
+                                                                            control={form.control}
+                                                                            name="price"
+                                                                            render={({field}) => (
+                                                                                <FormItem>
+                                                                                    {
+                                                                                        field.value
+                                                                                    } CHF
+                                                                                    <FormMessage className={"text-xl"}/>
+                                                                                </FormItem>
+                                                                            )}
+                                                                        />
+
+
+
+                                                                    </span>
                                                                     <div className="flex items-center gap-2">
 
                                                                         <FormField
@@ -203,6 +225,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                     event.preventDefault()
                                                                                                     const currentAmount = field.value || 0;
                                                                                                     if (currentAmount - 1 >= 1) {
+                                                                                                        setValue("price", variantMap.get(form.getValues().variantId).price * (currentAmount - 1))
                                                                                                         setValue("amount", currentAmount - 1);
 
                                                                                                     }
@@ -225,7 +248,9 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                             <Button
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
-                                                                                                    setValue("amount", field.value + 1)
+                                                                                                    const currentAmount = field.value || 0;
+                                                                                                    setValue("price", variantMap.get(form.getValues().variantId).price * (currentAmount + 1))
+                                                                                                    setValue("amount", currentAmount + 1)
 
                                                                                                 }}
                                                                                                 variant="ghost"
@@ -237,8 +262,6 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                             </Button>
                                                                                         </div>
                                                                                     </FormControl>
-
-
                                                                                     <FormMessage/>
                                                                                 </FormItem>
 
