@@ -33,6 +33,8 @@ import {Roast} from "@/types/roast";
 import {Variant} from "@/types/variant";
 import useVariantMap from "@/app/hooks/use-variants";
 import {EventProductAmount} from "@/types/event-product-amount";
+import {MinusIcon, PlusIcon} from "@/app/icons/icons";
+import {roundToFiveCents} from "@/lib/utils";
 
 
 const formSchema = z.object({
@@ -41,51 +43,6 @@ const formSchema = z.object({
     price: z.number().min(0, {message: "Preis kann nicht negativ sein."}),
 });
 
-interface MinusIconProps extends React.SVGProps<SVGSVGElement> {
-}
-
-interface PlusIconProps extends React.SVGProps<SVGSVGElement> {
-}
-
-const MinusIcon: React.FC<MinusIconProps> = (props) => {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M5 12h14"/>
-        </svg>
-    );
-};
-
-
-const PlusIcon: React.FC<PlusIconProps> = (props) => {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M5 12h14"/>
-            <path d="M12 5v14"/>
-        </svg>
-    )
-}
 
 export default function OverviewPage({roast, className}: { roast: Roast, className?: string }) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
@@ -157,41 +114,42 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                 <FormField
                                                                     control={form.control}
                                                                     name="variantId"
-                                                                    render={({field}) => (
+                                                                    render={({ field }) => (
                                                                         <FormItem>
-                                                                            <FormLabel className={"text-xl"}>wähle
-                                                                                aus:</FormLabel>
+                                                                            <FormLabel className={"text-xl"}>wähle aus:</FormLabel>
                                                                             <FormControl>
-                                                                                <ToggleGroup onValueChange={(e) => {
-                                                                                    if (parseInt(e)) {
-                                                                                        setValue("price", variantMap.get(parseInt(e)).price * form.getValues().amount)
-                                                                                    }
-
-                                                                                    field.onChange(e ? Number(e) : undefined);
-
-                                                                                }
-
-                                                                                } defaultValue={`${field.value}`}
-                                                                                             type="single"
-                                                                                             variant="outline">
-                                                                                    {epa.product.variants.map((v: Variant) => {
-                                                                                        return <ToggleGroupItem
+                                                                                <ToggleGroup
+                                                                                    value={String(field.value)} // Force the ToggleGroup to always have a selected value
+                                                                                    onValueChange={(e) => {
+                                                                                        if (e) {  // Only change the value when a valid option is selected
+                                                                                            setValue("price", Number(roundToFiveCents(variantMap.get(Number(e)).price * form.getValues().amount)));
+                                                                                            setValue("variantId", Number(e));
+                                                                                        }
+                                                                                    }}
+                                                                                    defaultValue={`${epa.product.variants[0].id}`} // Ensure default selection on initial load
+                                                                                    type="single"
+                                                                                    variant="outline"
+                                                                                >
+                                                                                    {epa.product.variants.map((v: Variant) => (
+                                                                                        <ToggleGroupItem
                                                                                             className={"text-xl"}
                                                                                             key={uuidv4()}
-                                                                                            value={String(v.id)}>{v.name}{v.displayUnit.name}</ToggleGroupItem>
-                                                                                    })}
+                                                                                            value={String(v.id)}
+                                                                                        >
+                                                                                            {v.name}{v.displayUnit.name}
+                                                                                        </ToggleGroupItem>
+                                                                                    ))}
                                                                                 </ToggleGroup>
                                                                             </FormControl>
-                                                                            <FormMessage className={"text-xl"}/>
+                                                                            <FormMessage className={"text-xl"} />
                                                                         </FormItem>
                                                                     )}
                                                                 />
 
+
                                                                 <div
                                                                     className="flex mt-10 items-center justify-between">
                                                                     <span className="text-2xl font-bold">
-
-
                                                                         <FormField
                                                                             control={form.control}
                                                                             name="price"
@@ -204,10 +162,8 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                 </FormItem>
                                                                             )}
                                                                         />
-
-
-
                                                                     </span>
+
                                                                     <div className="flex items-center gap-2">
 
                                                                         <FormField
@@ -225,7 +181,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                     event.preventDefault()
                                                                                                     const currentAmount = field.value || 0;
                                                                                                     if (currentAmount - 1 >= 1) {
-                                                                                                        setValue("price", variantMap.get(form.getValues().variantId).price * (currentAmount - 1))
+                                                                                                        setValue("price", Number(roundToFiveCents(variantMap.get(form.getValues().variantId).price * (currentAmount - 1))))
                                                                                                         setValue("amount", currentAmount - 1);
 
                                                                                                     }
@@ -249,7 +205,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
                                                                                                     const currentAmount = field.value || 0;
-                                                                                                    setValue("price", variantMap.get(form.getValues().variantId).price * (currentAmount + 1))
+                                                                                                    setValue("price", Number(roundToFiveCents(variantMap.get(form.getValues().variantId).price * (currentAmount + 1))))
                                                                                                     setValue("amount", currentAmount + 1)
 
                                                                                                 }}
