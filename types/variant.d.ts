@@ -8,4 +8,5 @@ export type Variant = {
     displayUnit: DisplayUnit;
     price: number | null;
     productName: string | null;
+    stockMultiplier: number;
 };

@@ -1,6 +1,7 @@
 "use client"
 
 import {useAtom} from 'jotai'
+import { useRef } from 'react';
 import Overview from "@/components/overview/overview";
 import Title from "@/components/overview/title";
 import TitleProvider from "@/components/overview/title-provider";
@@ -33,22 +34,53 @@ import {Roast} from "@/types/roast";
 import {Variant} from "@/types/variant";
 import {EventProductAmount} from "@/types/event-product-amount";
 import {MinusIcon, PlusIcon} from "@/app/icons/icons";
-import {roundToFiveCents} from "@/lib/utils";
+import {getSubTotalForEventProduct, roundToFiveCents} from "@/lib/utils";
 import useEventCache from "@/app/hooks/use-roast-cache";
 
 
-const formSchema = z.object({
-    variantId: z.number().min(1, {message: "Bitte wähle eine Variante aus."}),
-    amount: z.number().min(1, {message: "Bitte wähle eine Menge aus."}),
-    price: z.number().min(0, {message: "Preis kann nicht negativ sein."}),
-    eventProductAmountId: z.number().min(0, {message: "Etwas ist schief gegangen."}),
-});
+
 
 
 export default function OverviewPage({roast, className}: { roast: Roast, className?: string }) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const {data: session, status} = useSession()
-    const {variantMap} = useEventCache(roast)
+    const {variantMap, eventProductAmountMap} = useEventCache(roast)
+
+    const formSchema = z.object({
+        variantId: z.number().min(1, {message: "Bitte wähle eine Variante aus."}),
+        amount: z.number().min(1, {message: "Bitte wähle eine Menge aus."}),
+        price: z.number().min(0, {message: "Preis kann nicht negativ sein."}),
+        eventProductAmountId: z.number().min(0, {message: "Etwas ist schief gegangen."}),
+    }).superRefine((data, ctx) => {
+        const variant = variantMap.get(data.variantId);
+        const eventProductAmount = eventProductAmountMap.get(data.eventProductAmountId);
+
+        if (!variant || !eventProductAmount) {
+            // If either variant or eventProductAmount is undefined, add a general error.
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Etwas ist schief gegangen. Bitte überprüfe deine Eingabe.",
+                path: ["variantId"], // Adjust the path if needed, you can also use "eventProductAmountId"
+            });
+            return; // Return early if one of the maps is undefined
+        }
+
+        const subTotal = getSubTotalForEventProduct(data.eventProductAmountId, cart);
+
+        // Proceed only if both variant and eventProductAmount are defined
+        if (variant.stockMultiplier * data.amount + subTotal > eventProductAmount.amountLeft) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Bestellmenge ist grösser als unser Vorrat.",
+                path: ["amount"],
+            });
+
+            toast({
+                title: `Bestellmenge ist grösser als unser Vorrat. Überprüfe die gewählte Menge und die Menge der Produkte in deinem Warenkorb. \nWir haben insgesamt noch ${eventProductAmountMap.get(data.eventProductAmountId)?.amountLeft}kg an Lager.`,
+            })
+        }
+    });
+
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         const variantId = Number(values.variantId); // Convert to number here
@@ -169,7 +201,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
 
 
                                                                 <div
-                                                                    className="flex mt-10 items-center justify-between">
+                                                                    className="flex mt-10 justify-between">
                                                                     <span className="text-2xl font-bold">
                                                                         <FormField
                                                                             control={form.control}
@@ -185,18 +217,20 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                         />
                                                                     </span>
 
-                                                                    <div className="flex items-center gap-2">
+                                                                    <div className="flex gap-2">
 
                                                                         <FormField
                                                                             control={form.control}
                                                                             name="amount"
                                                                             render={({field}) => (
-                                                                                <FormItem>
+
+                                                                                <FormItem key={epa.id} defaultValue={""}>
                                                                                     <FormLabel>Menge</FormLabel>
 
                                                                                     <FormControl>
                                                                                         <div
-                                                                                            className="flex items-center gap-2">
+                                                                                            className="flex gap-2 justify-end">
+
                                                                                             <Button
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
@@ -220,13 +254,29 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                     className="sr-only">Decrement</span>
                                                                                             </Button>
                                                                                             <Input
-                                                                                                value={field.value}
-                                                                                                onInput={field.onChange}
-                                                                                                onChange={field.onChange}
+
+                                                                                                value={field.value} // This is the amount value, managed by React Hook Form
+                                                                                                onChange={(e) => {
+                                                                                                    const newAmount = Number(e.target.value); // Get the new value typed by the user
+
+                                                                                                    if (!isNaN(newAmount) && newAmount > 0) { // Ensure the new amount is valid
+                                                                                                        field.onChange(newAmount); // Update the amount in the form
+
+                                                                                                        const variant = variantMap.get(form.getValues().variantId); // Get the current selected variant
+
+                                                                                                        if (variant && variant.price) {
+                                                                                                            // Recalculate the price based on the new amount and set it
+                                                                                                            setValue("price", Number(roundToFiveCents(variant.price * newAmount))); // Only update the price, avoid rerendering the input
+                                                                                                        }
+                                                                                                    }
+
+                                                                                                }}
                                                                                                 type="number"
                                                                                                 className="w-20 px-2 py-1 text-center rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                                                                                                 placeholder="1"
                                                                                             />
+
+
                                                                                             <Button
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
@@ -247,9 +297,12 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                 <span
                                                                                                     className="sr-only">Increment</span>
                                                                                             </Button>
+
+
                                                                                         </div>
+
                                                                                     </FormControl>
-                                                                                    <FormMessage/>
+
                                                                                 </FormItem>
 
 
