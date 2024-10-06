@@ -1,7 +1,5 @@
 "use client"
 
-import {useAtom} from 'jotai'
-import { useRef } from 'react';
 import Overview from "@/components/overview/overview";
 import Title from "@/components/overview/title";
 import TitleProvider from "@/components/overview/title-provider";
@@ -36,10 +34,6 @@ import {EventProductAmount} from "@/types/event-product-amount";
 import {MinusIcon, PlusIcon} from "@/app/icons/icons";
 import {getSubTotalForEventProduct, roundToFiveCents} from "@/lib/utils";
 import useEventCache from "@/app/hooks/use-roast-cache";
-
-
-
-
 
 export default function OverviewPage({roast, className}: { roast: Roast, className?: string }) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
