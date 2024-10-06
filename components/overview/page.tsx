@@ -31,33 +31,35 @@ import {toast} from "@/components/ui/use-toast";
 import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
 import {Roast} from "@/types/roast";
 import {Variant} from "@/types/variant";
-import useVariantMap from "@/app/hooks/use-variants";
 import {EventProductAmount} from "@/types/event-product-amount";
 import {MinusIcon, PlusIcon} from "@/app/icons/icons";
 import {roundToFiveCents} from "@/lib/utils";
+import useEventCache from "@/app/hooks/use-roast-cache";
 
 
 const formSchema = z.object({
     variantId: z.number().min(1, {message: "Bitte wähle eine Variante aus."}),
     amount: z.number().min(1, {message: "Bitte wähle eine Menge aus."}),
     price: z.number().min(0, {message: "Preis kann nicht negativ sein."}),
+    eventProductAmountId: z.number().min(0, {message: "Etwas ist schief gegangen."}),
 });
 
 
 export default function OverviewPage({roast, className}: { roast: Roast, className?: string }) {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const {data: session, status} = useSession()
-    const {variantMap} = useVariantMap(roast)
+    const {variantMap} = useEventCache(roast)
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         const variantId = Number(values.variantId); // Convert to number here
-
+        console.log(values.eventProductAmountId)
         addShoppingCartItem({
             id: 0,
             eventId: roast.id,
             variantId: variantId,
             amount: values.amount,
             variant: variantMap.get(variantId),
+            eventProductAmountId: values.eventProductAmountId
         }).then(() => {
             toast({
                 title: "Auswahl wurde dem Warenkorb hinzugefügt.",
@@ -88,7 +90,8 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                         defaultValues: {
                                             variantId: 0,
                                             amount: 1,
-                                            price: 0
+                                            price: 0,
+                                            eventProductAmountId: undefined
                                         },
                                     })
 
@@ -109,37 +112,55 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                         <form onSubmit={form.handleSubmit(onSubmit)}
                                                               className="flex flex-col gap-y-10 mt-5">
 
+                                                            <FormField
+                                                                control={form.control}
+                                                                name="variantId"
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <FormLabel className={"text-xl"}>wähle aus:</FormLabel>
+                                                                        <FormControl>
+                                                                            <ToggleGroup
+                                                                                value={String(field.value)} // Force the ToggleGroup to always have a selected value
+                                                                                onValueChange={(e) => {
+                                                                                    if (e) {  // Only change the value when a valid option is selected
+                                                                                        const variant = variantMap.get(Number(e));
+                                                                                        const price = variant?.price ?? 0;  // Use 0 if price is null or undefined
+                                                                                        const amount = form.getValues().amount;
+
+                                                                                        setValue("price", Number(roundToFiveCents(price * amount)));
+                                                                                        setValue("variantId", Number(e));
+                                                                                    }
+                                                                                }}
+                                                                                defaultValue={`${epa.product.variants[0].id}`} // Ensure default selection on initial load
+                                                                                type="single"
+                                                                                variant="outline"
+                                                                            >
+                                                                                {epa.product.variants.map((v: Variant) => (
+                                                                                    <ToggleGroupItem
+                                                                                        className={"text-xl"}
+                                                                                        key={uuidv4()}
+                                                                                        value={String(v.id)}
+                                                                                    >
+                                                                                        {v.name}{v.displayUnit.name}
+                                                                                    </ToggleGroupItem>
+                                                                                ))}
+                                                                            </ToggleGroup>
+                                                                        </FormControl>
+                                                                        <FormMessage className={"text-xl"} />
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+
                                                             <div className="grid gap-4">
 
                                                                 <FormField
+                                                                    defaultValue={epa.id}
                                                                     control={form.control}
-                                                                    name="variantId"
+                                                                    name="eventProductAmountId"
                                                                     render={({ field }) => (
-                                                                        <FormItem>
-                                                                            <FormLabel className={"text-xl"}>wähle aus:</FormLabel>
+                                                                        <FormItem hidden={true} defaultValue={`${epa.id}`}>
                                                                             <FormControl>
-                                                                                <ToggleGroup
-                                                                                    value={String(field.value)} // Force the ToggleGroup to always have a selected value
-                                                                                    onValueChange={(e) => {
-                                                                                        if (e) {  // Only change the value when a valid option is selected
-                                                                                            setValue("price", Number(roundToFiveCents(variantMap.get(Number(e)).price * form.getValues().amount)));
-                                                                                            setValue("variantId", Number(e));
-                                                                                        }
-                                                                                    }}
-                                                                                    defaultValue={`${epa.product.variants[0].id}`} // Ensure default selection on initial load
-                                                                                    type="single"
-                                                                                    variant="outline"
-                                                                                >
-                                                                                    {epa.product.variants.map((v: Variant) => (
-                                                                                        <ToggleGroupItem
-                                                                                            className={"text-xl"}
-                                                                                            key={uuidv4()}
-                                                                                            value={String(v.id)}
-                                                                                        >
-                                                                                            {v.name}{v.displayUnit.name}
-                                                                                        </ToggleGroupItem>
-                                                                                    ))}
-                                                                                </ToggleGroup>
+                                                                                <Input readOnly={true} value={field.value}/>
                                                                             </FormControl>
                                                                             <FormMessage className={"text-xl"} />
                                                                         </FormItem>
@@ -180,11 +201,16 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
                                                                                                     const currentAmount = field.value || 0;
-                                                                                                    if (currentAmount - 1 >= 1) {
-                                                                                                        setValue("price", Number(roundToFiveCents(variantMap.get(form.getValues().variantId).price * (currentAmount - 1))))
-                                                                                                        setValue("amount", currentAmount - 1);
 
+                                                                                                    if (currentAmount - 1 >= 1) {
+                                                                                                        const variant = variantMap.get(form.getValues().variantId);
+
+                                                                                                        if (variant && variant.price) {  // Ensure variant and price are defined
+                                                                                                            setValue("price", Number(roundToFiveCents(variant.price * (currentAmount - 1))));
+                                                                                                            setValue("amount", currentAmount - 1);
+                                                                                                        }
                                                                                                     }
+
 
                                                                                                 }} variant="ghost"
                                                                                                 size="icon"
@@ -205,8 +231,13 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                                 onClick={(event) => {
                                                                                                     event.preventDefault()
                                                                                                     const currentAmount = field.value || 0;
-                                                                                                    setValue("price", Number(roundToFiveCents(variantMap.get(form.getValues().variantId).price * (currentAmount + 1))))
-                                                                                                    setValue("amount", currentAmount + 1)
+                                                                                                    const variant = variantMap.get(form.getValues().variantId);
+
+                                                                                                    if (variant && variant.price) {  // Ensure variant and price are defined
+                                                                                                        setValue("price", Number(roundToFiveCents(variant.price * (currentAmount + 1))));
+                                                                                                        setValue("amount", currentAmount + 1);
+                                                                                                    }
+
 
                                                                                                 }}
                                                                                                 variant="ghost"

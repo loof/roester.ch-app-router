@@ -6,5 +6,6 @@ export type CartItem = {
     variantId: number;
     amount: number;
     cartId?: number;
-    variant: Variant;
+    variant: Variant | undefined;
+    eventProductAmountId?: number | null
 }
