@@ -124,7 +124,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                     const {setValue} = form;
 
                                     return (
-                                        <div key={uuidv4()}>
+                                        <div key={uuidv4()} className={"w-full sm:w-1/2"}>
                                             <Item>
                                                 <div className="p-4 grid gap-4">
                                                     <h2 className="font-sans normal-case text-4xl font-semibold">{epa.product.name}</h2>
