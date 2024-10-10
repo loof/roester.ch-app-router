@@ -1,3 +1,6 @@
+import {AppUser} from "@/types/app-user";
+import {createAppUser} from "@/lib/api/app-user";
+
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export async function login({ email, password } : {email: string, password: string}) {
@@ -14,5 +17,24 @@ export async function login({ email, password } : {email: string, password: stri
     }
 
     const data = await response.json()
+    return data
+}
+
+export async function signup(appUser: AppUser): Promise<AppUser> {
+    console.log(appUser)
+    const res = await fetch(`${URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({appUser, type: "credentials"}),
+    });
+
+    if (!res.ok) {
+        throw new Error("An error occured while fetching")
+    }
+
+
+    const data = await res.json()
     return data
 }

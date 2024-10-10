@@ -18,7 +18,6 @@ const FormSchema = z.object({
 
 })
 
-// Define the shape of the `errors` state
 interface ErrorsState {
     login?: string; // login is optional
 }
@@ -50,19 +49,21 @@ export default function LoginPage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: data.email, password: data.password, type: "credentials" }),
+                body: JSON.stringify({email: data.email, password: data.password, type: "credentials"}),
             });
 
             if (res.ok) {
                 setAuthenticated(true);
             } else {
                 // handle error state here
-                setErrors((prev) => { return {...prev, login: "Ungültiges Login"}});
+                setErrors((prev) => {
+                    return {...prev, login: "Ungültiges Login"}
+                });
             }
         } catch (error) {
-            // handle error state here
-            console.error("Error during sign-in", error);
-            setErrors((prev) => { return {...prev, login: "Server Fehler"}});
+            setErrors((prev) => {
+                return {...prev, login: "Etwas ist schief gegangen. Versuche es erneut."}
+            });
         }
     }
 
@@ -108,7 +109,8 @@ export default function LoginPage() {
                         )}
                     />
                     <Button className={"text-3xl p-8 lowercase font-display"} type="submit">Login</Button>
-                    <Button className={"text-3xl p-8 lowercase font-display"} variant="outline"  asChild><Link href={"/signup"}>Registrieren</Link></Button>
+                    <Button className={"text-3xl p-8 lowercase font-display"} variant="outline" asChild><Link
+                        href={"/signup"}>Registrieren</Link></Button>
                 </form>
             </Form>
 
