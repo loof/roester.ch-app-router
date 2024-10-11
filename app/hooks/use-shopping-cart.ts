@@ -162,10 +162,14 @@ export function useShoppingCart() {
                             ...item,
                             amount: item.amount - 1,
                         };
-                    } else {
+                    } else if (removeAll) {
                         // Remove item entirely if amount is 1 or removeAll is true
                         newCart.items = newCart.items.filter((item) => item.id !== id);
                     }
+                }
+
+                if (newCart.items.length === 0) {
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
                 }
 
                 return newCart;
