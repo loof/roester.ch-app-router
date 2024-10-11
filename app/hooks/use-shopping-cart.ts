@@ -2,7 +2,7 @@ import {useSession} from "next-auth/react";
 import {useEffect, useState} from "react";
 import {useAtom} from "jotai";
 import {cartAtom} from "@/app/atoms/shopping-cart-atom";
-import {createCartItems, getCart} from "@/lib/api/shopping-cart";
+import {createCartItems, getCart, removeCartItemById, updateCartItem} from "@/lib/api/shopping-cart";
 import {CartItem} from "@/types/cart-item";
 import {Cart} from "@/types/cart";
 
@@ -98,15 +98,82 @@ export function useShoppingCart() {
     };
 
     // Remove item from the shopping cart
-    const removeShoppingCartItem = (id: number) => {
-        setCart((prevCart : Cart) => {
-            const newCart: Cart = {...prevCart};
-            newCart.items = prevCart.items.filter((item) => item.id !== id);
-            return newCart;
-        });
+    const removeShoppingCartItem = async (id: number, removeAll: boolean = false) => {
+        if (isAuthenticated && session?.user?.accessToken && session?.user?.cartId && !isSyncing) {
+            setIsSyncing(true); // Start syncing process
 
-        // Optionally, add code here to remove the item from the server if authenticated
+            try {
+                // Find the item in the cart
+                const existingItem = cart.items.find((item) => item.id === id);
+
+                if (existingItem) {
+                    if (removeAll) {
+                        // If `removeAll` is true or only one item is left, remove the item from server and local state
+                        await removeCartItemById(session.user.accessToken, id);
+
+                        setCart((prevCart: Cart) => {
+                            const newCart: Cart = {
+                                ...prevCart,
+                                items: prevCart.items.filter((item) => item.id !== id)
+                            };
+                            return newCart;
+                        });
+                    } else if (existingItem.amount > 1) {
+                        // Decrease the amount in the server and local state if more than 1 left
+                        const newAmount = existingItem.amount - 1;
+                        existingItem.amount = newAmount;
+                        await updateCartItem(session.user.accessToken, existingItem);
+
+                        setCart((prevCart: Cart) => {
+                            const newCart: Cart = { ...prevCart };
+                            const itemIndex = newCart.items.findIndex((item) => item.id === id);
+
+                            if (itemIndex !== -1) {
+                                newCart.items[itemIndex] = {
+                                    ...newCart.items[itemIndex],
+                                    amount: newAmount
+                                };
+                            }
+
+                            return newCart;
+                        });
+                    }
+
+
+                }
+
+            } catch (error) {
+                console.error('Error removing cart item from server', error);
+            } finally {
+                setIsSyncing(false); // Syncing finished
+            }
+        } else if (!isAuthenticated) {
+            // If not authenticated, just update the local state
+            setCart((prevCart: Cart) => {
+                const newCart: Cart = { ...prevCart };
+
+                const itemIndex = newCart.items.findIndex((item) => item.id === id);
+                if (itemIndex !== -1) {
+                    const item = newCart.items[itemIndex];
+
+                    if (item.amount > 1 && !removeAll) {
+                        // Decrease amount if more than 1 left
+                        newCart.items[itemIndex] = {
+                            ...item,
+                            amount: item.amount - 1,
+                        };
+                    } else {
+                        // Remove item entirely if amount is 1 or removeAll is true
+                        newCart.items = newCart.items.filter((item) => item.id !== id);
+                    }
+                }
+
+                return newCart;
+            });
+        }
     };
+
+
 
     return {
         cart,

@@ -39,7 +39,8 @@ export async function createCartItems(token: string, cartId: number, cartItems: 
 }
 
 export async function updateCartItem(token: string, cartItem: CartItem) {
-    const response = await fetch(`${URL}/carts/${cartItem.cartId}/items`, {
+    console.log(cartItem)
+    const response = await fetch(`${URL}/carts/${cartItem.cartId}/items/${cartItem.id}`, {
         method: "PATCH",
         headers: {
             "content-type": "application/json",
@@ -49,11 +50,26 @@ export async function updateCartItem(token: string, cartItem: CartItem) {
     })
 
     if (!response.ok) {
-        throw new Error("An error occured while fetching")
+        throw new Error("An error occured while updating cart item.")
     }
 
     const data = await response.json()
     return data
+}
+
+export async function removeCartItemById(token: string, id: number) {
+    const response = await fetch(`${URL}/carts/${id}/items`, {
+        method: "DELETE",
+        headers: {
+            "content-type": "application/json",
+            "authorization": `Bearer ${token}`
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error("An error occured while removing cart item by id.")
+    }
+
 }
 
 
