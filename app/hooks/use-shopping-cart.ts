@@ -14,6 +14,10 @@ export function useShoppingCart() {
     const isAuthenticated = status === 'authenticated';
     const [isSyncing, setIsSyncing] = useState(false);  // To prevent multiple API calls
 
+    const calculateCartTotal = (cartItems: CartItem[]): number => {
+        return cartItems.reduce((total, item) => total + item.amount * (item.variant?.price || 0), 0);
+    };
+
     // Load cart from local storage for unauthenticated users or server for authenticated users
     useEffect(() => {
         const fetchData = async () => {
@@ -90,6 +94,9 @@ export function useShoppingCart() {
                 } else {
                     updatedCart.items.push(cartItem);
                 }
+
+                // Calculate the new total
+                updatedCart.total = calculateCartTotal(updatedCart.items);
 
                 return updatedCart;
 
@@ -171,6 +178,9 @@ export function useShoppingCart() {
                 if (newCart.items.length === 0) {
                     localStorage.removeItem(LOCAL_STORAGE_KEY);
                 }
+
+                // Calculate the new total
+                newCart.total = calculateCartTotal(newCart.items);
 
                 return newCart;
             });

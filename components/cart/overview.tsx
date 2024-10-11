@@ -39,7 +39,7 @@ export default function CartOverview() {
                                             variant="ghost"
                                             size="icon"
                                             className="w-8 h-8 rounded-full hover:bg-muted">
-                                            <MinusIcon/>
+                                            <MinusIcon />
                                             <span className="sr-only">Decrement</span>
                                         </Button>
                                         <span className="font-semibold text-2xl">{item.amount}</span>

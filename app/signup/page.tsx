@@ -151,11 +151,11 @@ export default function SignUpPage() {
                             <FormItem>
                                 <div className="text-left">
                                     <FormLabel className="text-2xl">Vorname</FormLabel>
-                                    <FormMessage className="text-xl"/>
                                 </div>
                                 <FormControl>
                                     <Input className="text-xl" placeholder="Vorname" {...field} />
                                 </FormControl>
+                                <FormMessage className="text-xl text-left"/>
                             </FormItem>
                         )}
                     />
@@ -167,11 +167,11 @@ export default function SignUpPage() {
                             <FormItem>
                                 <div className="text-left">
                                     <FormLabel className="text-2xl">Nachname</FormLabel>
-                                    <FormMessage className="text-xl"/>
                                 </div>
                                 <FormControl>
                                     <Input className="text-xl" placeholder="Vorname" {...field} />
                                 </FormControl>
+                                <FormMessage className="text-xl text-left"/>
                             </FormItem>
                         )}
                     />
@@ -183,78 +183,85 @@ export default function SignUpPage() {
                             <FormItem>
                                 <div className="text-left">
                                     <FormLabel className="text-2xl">E-Mail Adresse</FormLabel>
-                                    <FormMessage className="text-xl"/>
                                 </div>
                                 <FormControl>
                                     <Input className="text-xl" placeholder="deine@email.com" {...field} />
                                 </FormControl>
+                                <FormMessage className="text-xl text-left"/>
                             </FormItem>
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="street"
-                        render={({field}) => (
-                            <FormItem>
-                                <div className="text-left">
-                                    <FormLabel className="text-2xl">Strasse</FormLabel>
-                                    <FormMessage className="text-xl"/>
-                                </div>
-                                <FormControl>
-                                    <Input className="text-xl" placeholder="Strasse" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
+                    <div className={"grid grid-cols-2 gap-5"}>
+                        <FormField
+                            control={form.control}
+                            name="street"
+                            render={({field}) => (
+                                <FormItem>
+                                    <div className="text-left">
+                                        <FormLabel className="text-2xl">Strasse</FormLabel>
 
-                    <FormField
-                        control={form.control}
-                        name="streetNumber"
-                        render={({field}) => (
-                            <FormItem>
-                                <div className="text-left">
-                                    <FormLabel className="text-2xl">Hausnummer</FormLabel>
-                                    <FormMessage className="text-xl"/>
-                                </div>
-                                <FormControl>
-                                    <Input className="text-xl" placeholder="Hausnummer" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
+                                    </div>
+                                    <FormControl>
+                                        <Input className="text-xl" placeholder="Strasse" {...field} />
+                                    </FormControl>
+                                    <FormMessage className="text-xl text-left"/>
+                                </FormItem>
+                            )}
+                        />
 
-                    <FormField
-                        control={form.control}
-                        name="postalCode"
-                        render={({field}) => (
-                            <FormItem>
-                                <div className="text-left">
-                                    <FormLabel className="text-2xl">PLZ</FormLabel>
-                                    <FormMessage className="text-xl"/>
-                                </div>
-                                <FormControl>
-                                    <Input className="text-xl" placeholder="PLZ" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
+                        <FormField
+                            control={form.control}
+                            name="streetNumber"
+                            render={({field}) => (
+                                <FormItem>
+                                    <div className="text-left">
+                                        <FormLabel className="text-2xl">Hausnummer</FormLabel>
+                                    </div>
+                                    <FormControl>
+                                        <Input className="text-xl" placeholder="Hausnummer" {...field} />
+                                    </FormControl>
+                                    <FormMessage className="text-xl text-left"/>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
-                    <FormField
-                        control={form.control}
-                        name="city"
-                        render={({field}) => (
-                            <FormItem>
-                                <div className="text-left">
-                                    <FormLabel className="text-2xl">Ort</FormLabel>
-                                    <FormMessage className="text-xl"/>
-                                </div>
-                                <FormControl>
-                                    <Input className="text-xl" placeholder="Ort" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
+                    <div className={"grid grid-cols-2 gap-5"}>
+
+                        <FormField
+                            control={form.control}
+                            name="postalCode"
+                            render={({field}) => (
+                                <FormItem>
+                                    <div className="text-left">
+                                        <FormLabel className="text-2xl">PLZ</FormLabel>
+                                    </div>
+                                    <FormControl>
+                                        <Input className="text-xl" placeholder="PLZ" {...field} />
+                                    </FormControl>
+                                    <FormMessage className="text-xl text-left"/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="city"
+                            render={({field}) => (
+                                <FormItem>
+                                    <div className="text-left">
+                                        <FormLabel className="text-2xl">Ort</FormLabel>
+                                    </div>
+                                    <FormControl>
+                                        <Input className="text-xl" placeholder="Ort" {...field} />
+                                    </FormControl>
+                                    <FormMessage className="text-xl text-left"/>
+                                </FormItem>
+                            )}
+                        />
+
+                    </div>
 
                     <FormField
                         control={form.control}
@@ -263,11 +270,12 @@ export default function SignUpPage() {
                             <FormItem>
                                 <div className="text-left">
                                     <FormLabel className="text-2xl">Passwort</FormLabel>
-                                    <FormMessage className="text-xl"/>
                                 </div>
                                 <FormControl>
-                                    <Input className="text-xl" placeholder="Passwort" type={"password"} {...field} />
+                                    <Input className="text-xl" placeholder="Passwort"
+                                           type={"password"} {...field} />
                                 </FormControl>
+                                <FormMessage className="text-xl text-left"/>
                             </FormItem>
                         )}
                     />
@@ -279,11 +287,12 @@ export default function SignUpPage() {
                             <FormItem>
                                 <div className="text-left">
                                     <FormLabel className="text-2xl">Passwort Wiederholung</FormLabel>
-                                    <FormMessage className="text-xl"/>
                                 </div>
                                 <FormControl>
-                                    <Input className="text-xl" placeholder="Passwort" type={"password"} {...field} />
+                                    <Input className="text-xl" placeholder="Passwort"
+                                           type={"password"} {...field} />
                                 </FormControl>
+                                <FormMessage className="text-xl text-left"/>
                             </FormItem>
                         )}
                     />
