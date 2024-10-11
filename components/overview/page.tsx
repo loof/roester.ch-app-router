@@ -78,7 +78,6 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         const variantId = Number(values.variantId); // Convert to number here
-        console.log(values.eventProductAmountId)
         addShoppingCartItem({
             id: 0,
             eventId: roast.id,

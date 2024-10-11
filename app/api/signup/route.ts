@@ -9,12 +9,8 @@ import {AppUser} from "@/types/app-user";
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export async function POST(req: NextRequest, res: NextResponse) {
-
-    const appUser : AppUser = await req.json();
-
-    const body = JSON.stringify(appUser)
-
-    console.log(body)
+    const appUser: AppUser = await req.json();
+    const body = JSON.stringify(appUser);
 
     try {
         const registerResponse = await fetch(`${URL}/auth/signup`, {
@@ -25,26 +21,27 @@ export async function POST(req: NextRequest, res: NextResponse) {
             body: body,
         });
 
-        if (!registerResponse || !registerResponse.ok) {
-            return NextResponse.json({ error: "Something went wrong" });
+        if (registerResponse.status === 409) {
+            return NextResponse.json({ error: "E-Mail Adresse existiert bereits" }, { status: 409 });
+        } else if (!registerResponse.ok) {
+            return NextResponse.error()
         } else {
+            // Proceed to sign-in if registration is successful
+            const result = await signIn("credentials", {
+                redirect: false,
+                email: appUser.email,
+                password: appUser.password,
+            });
 
-            const result =  await signIn("credentials", { redirect: false, email: appUser.email, password: appUser.password });
-
-            // handle the result of the sign-in attempt
+            // Handle the result of the sign-in attempt
             if (!result || result.error) {
-                return NextResponse.json({ error: "Something went wrong" });
-            } else {
-                return NextResponse.json({ success: true });
+                return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
             }
 
+            return NextResponse.json({ success: true }, { status: 200 });
         }
-
     } catch (error) {
-        return NextResponse.json({ error: "Something went wrong" });
+        // Return a 500 Internal Server Error in case of an exception
+        return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
-
-
-
-
 }

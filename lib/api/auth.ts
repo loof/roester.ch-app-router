@@ -21,7 +21,6 @@ export async function login({ email, password } : {email: string, password: stri
 }
 
 export async function signup(appUser: AppUser): Promise<AppUser> {
-    console.log(appUser)
     const res = await fetch(`${URL}/auth/signup`, {
         method: "POST",
         headers: {

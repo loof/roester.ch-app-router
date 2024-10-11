@@ -18,6 +18,7 @@ import {useEffect, useState} from "react";
 import {useSearchParams} from 'next/navigation';
 import {login, signup} from "@/lib/api/auth";
 import {createAppUser} from "@/lib/api/app-user";
+import ErrorMessage from "@/components/error-message";
 
 const passwordSchema = z
     .string()
@@ -70,7 +71,7 @@ export default function SignUpPage() {
     useEffect(() => {
         if (authenticated) {
             // Redirect to previous page or home page
-            window.location.href = searchParams.get("next") || "/";
+            window.location.href = "/signup/verify";
         }
     }, [authenticated]);
 
@@ -81,7 +82,7 @@ export default function SignUpPage() {
             firstname: "",
             lastname: "",
             street: "",
-            streetNr: "",
+            streetNumber: "",
             city: "",
             postalCode: "",
             email: "",
@@ -112,14 +113,16 @@ export default function SignUpPage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(appUser),
-            });
+            })
 
             if (res.ok) {
                 setAuthenticated(true);
             } else {
+                const errorBody = await res.json();
+
                 // handle error state here
                 setErrors((prev) => {
-                    return {...prev, signup: "Ungültiges Login"}
+                    return {...prev, signup: errorBody.error}
                 });
             }
 
@@ -134,10 +137,12 @@ export default function SignUpPage() {
     return (
         <main className="container max-w-screen-lg text-center">
             <h1 className="mb-10 text-6xl">Registrieren</h1>
-            {errors.signup && <p >{errors.signup}</p>} {/* Render error message if present */}
+
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-10 m-10">
+
+                    {errors.signup && <ErrorMessage>{errors.signup}</ErrorMessage>}
 
                     <FormField
                         control={form.control}
@@ -187,37 +192,37 @@ export default function SignUpPage() {
                         )}
                     />
 
-                        <FormField
-                            control={form.control}
-                            name="street"
-                            render={({field}) => (
-                                <FormItem>
-                                    <div className="text-left">
-                                        <FormLabel className="text-2xl">Strasse</FormLabel>
-                                        <FormMessage className="text-xl"/>
-                                    </div>
-                                    <FormControl>
-                                        <Input className="text-xl" placeholder="Strasse" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
+                    <FormField
+                        control={form.control}
+                        name="street"
+                        render={({field}) => (
+                            <FormItem>
+                                <div className="text-left">
+                                    <FormLabel className="text-2xl">Strasse</FormLabel>
+                                    <FormMessage className="text-xl"/>
+                                </div>
+                                <FormControl>
+                                    <Input className="text-xl" placeholder="Strasse" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
 
-                        <FormField
-                            control={form.control}
-                            name="streetNumber"
-                            render={({field}) => (
-                                <FormItem>
-                                    <div className="text-left">
-                                        <FormLabel className="text-2xl">Hausnummer</FormLabel>
-                                        <FormMessage className="text-xl"/>
-                                    </div>
-                                    <FormControl>
-                                        <Input className="text-xl" placeholder="Hausnummer" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
+                    <FormField
+                        control={form.control}
+                        name="streetNumber"
+                        render={({field}) => (
+                            <FormItem>
+                                <div className="text-left">
+                                    <FormLabel className="text-2xl">Hausnummer</FormLabel>
+                                    <FormMessage className="text-xl"/>
+                                </div>
+                                <FormControl>
+                                    <Input className="text-xl" placeholder="Hausnummer" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
 
                     <FormField
                         control={form.control}
@@ -283,7 +288,7 @@ export default function SignUpPage() {
                         )}
                     />
 
-                    {/* Repeat for other form fields */}
+                    {errors.signup && <ErrorMessage>{errors.signup}</ErrorMessage>}
                     <Button className="text-3xl p-8 lowercase font-display" type="submit">Registrieren</Button>
                 </form>
             </Form>
