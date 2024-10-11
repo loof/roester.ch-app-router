@@ -24,20 +24,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         if (registerResponse.status === 409) {
             return NextResponse.json({ error: "E-Mail Adresse existiert bereits" }, { status: 409 });
         } else if (!registerResponse.ok) {
-            return NextResponse.error()
+            return NextResponse.json({ error: "Etwas ist schief gegangen." }, { status: registerResponse.status });
         } else {
-            // Proceed to sign-in if registration is successful
-            const result = await signIn("credentials", {
-                redirect: false,
-                email: appUser.email,
-                password: appUser.password,
-            });
-
-            // Handle the result of the sign-in attempt
-            if (!result || result.error) {
-                return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-            }
-
             return NextResponse.json({ success: true }, { status: 200 });
         }
     } catch (error) {
