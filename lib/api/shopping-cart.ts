@@ -39,7 +39,6 @@ export async function createCartItems(token: string, cartId: number, cartItems: 
 }
 
 export async function updateCartItem(token: string, cartItem: CartItem) {
-    console.log(cartItem)
     const response = await fetch(`${URL}/carts/${cartItem.cartId}/items/${cartItem.id}`, {
         method: "PATCH",
         headers: {

@@ -5,6 +5,7 @@ import {cartAtom} from "@/app/atoms/shopping-cart-atom";
 import {createCartItems, getCart, removeCartItemById, updateCartItem} from "@/lib/api/shopping-cart";
 import {CartItem} from "@/types/cart-item";
 import {Cart} from "@/types/cart";
+import {v4 as uuidv4} from 'uuid';
 
 const LOCAL_STORAGE_KEY = 'shopping_cart';
 
@@ -13,6 +14,21 @@ export function useShoppingCart() {
     const { data: session, status } = useSession();
     const isAuthenticated = status === 'authenticated';
     const [isSyncing, setIsSyncing] = useState(false);  // To prevent multiple API calls
+
+    const getNextCartItemId = () => {
+        // Retrieve the current item id counter from localStorage (if it exists)
+        const currentId = localStorage.getItem('cart_item_id_counter');
+        let nextId = 1;  // Default ID if no counter exists
+
+        if (currentId) {
+            nextId = parseInt(currentId, 10) + 1;  // Increment the counter
+        }
+
+        // Store the updated counter back in localStorage
+        localStorage.setItem('cart_item_id_counter', nextId.toString());
+
+        return nextId;
+    };
 
     const calculateCartTotal = (cartItems: CartItem[]): number => {
         return cartItems.reduce((total, item) => total + item.amount * (item.variant?.price || 0), 0);
@@ -92,6 +108,7 @@ export function useShoppingCart() {
                 if (existingItem) {
                     existingItem.amount += cartItem.amount;
                 } else {
+                    cartItem.id = getNextCartItemId();
                     updatedCart.items.push(cartItem);
                 }
 
