@@ -5,6 +5,7 @@ import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
 import NavigationLinks from "@/components/nav-bar/navigation-links";
 import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
+import ShoppingCartIcon from "@/components/shopping-cart-icon";
 
 
 export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onClose: () => void}) {
@@ -34,7 +35,12 @@ export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onC
                     })
                 }
 
-                <LoginLogoutListItem className={"text-xl"} />
+                <Link onClick={onClose} className={clsx('text-3xl pt-10 hover:text-primary', {
+                    'text-primary': pathname.startsWith("/cart"),
+                    'text-primary-foreground': !pathname.startsWith("/cart")
+                })} href={"/cart"}>Warenkorb <ShoppingCartIcon/></Link>
+
+
 
             </ul>
         </div>

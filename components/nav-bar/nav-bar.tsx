@@ -21,8 +21,8 @@ export default  function NavBar({className}: {className?: string}) {
                 <LogoLink />
                 <DesktopNavLinks />
             </div>
-            <div className="sm:hidden">
-                <LogoLink className={"pt-10"} />
+            <div className={`sm:hidden fixed z-10 opacity-95 inset-x-0 pb-6 mx-auto bg-black border-b px-6 border-primary-foreground/20 flex-row justify-between items-center text-center max-w-screen-lg  ${className}`}>
+                <LogoLink />
                 <MobileMenuButton onClick={handleDrawerToggle} />
                 <MobileDrawer isOpen={isDrawerOpen} onClose={handleDrawerToggle} />
             </div>

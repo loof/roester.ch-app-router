@@ -4,6 +4,15 @@ import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
 import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
 import ShoppingCartIcon from "@/components/shopping-cart-icon";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {Button} from "@/components/ui/button";
+import {LogIn, LogOut, Settings, User} from "lucide-react";
 
 export default function DesktopNavLinks() {
     const pathname = usePathname()
@@ -25,10 +34,12 @@ export default function DesktopNavLinks() {
 
             {
                 !pathname.startsWith("/login") &&
-                 <LoginLogoutListItem className={"text-xl"} />
+                 <LoginLogoutListItem  />
             }
 
             <li><Link href={"/cart"}><ShoppingCartIcon /></Link></li>
+
+
 
         </ul>
     );
