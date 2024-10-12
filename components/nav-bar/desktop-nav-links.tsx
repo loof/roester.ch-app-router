@@ -22,7 +22,7 @@ export default function DesktopNavLinks() {
             {
                 NavigationLinks().map((link, index) => {
                     return (
-                        <li key={index} className={clsx('text-xl hover:text-primary', {
+                        <li key={index} className={clsx('text-xl mt-1 hover:text-primary', {
                             'text-primary': pathname.startsWith(link.href),
                             'text-primary-foreground': !pathname.startsWith(link.href)
                         })}>
