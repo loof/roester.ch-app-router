@@ -14,6 +14,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {LogIn, LogOut, Settings, User} from "lucide-react";
 import {router} from "next/client";
+import {clsx} from "clsx";
 
 export default function LoginLogoutListItemDesktop({className} : {className?: string}) {
     const pathname = usePathname();
@@ -39,10 +40,15 @@ export default function LoginLogoutListItemDesktop({className} : {className?: st
             <DropdownMenuContent align="end">
                 {isLoggedIn ? (
                     <>
-                        <DropdownMenuItem onClick={() => console.log("Einstellungen öffnen")}>
+                    <Link href={"/profile"}   passHref legacyBehavior>
+                        <DropdownMenuItem className={clsx('hover:text-primary', {
+                            'text-primary': pathname.startsWith("/profile"),
+                            'text-primary-foreground': !pathname.startsWith("/profile")
+                        })}>
                             <User className="mr-2 h-4 w-4"/>
                             <span>Profil</span>
                         </DropdownMenuItem>
+                    </Link>
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem onClick={e => {signOut()}}>
                             <LogOut className="mr-2 h-4 w-4"/>
