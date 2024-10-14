@@ -113,9 +113,9 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                     const form = useForm<z.infer<typeof formSchema>>({
                                         resolver: zodResolver(formSchema),
                                         defaultValues: {
-                                            variantId: 0,
+                                            variantId: epa.product.variants[0]?.id || 0,
                                             amount: 1,
-                                            price: 0,
+                                            price: roundToFiveCents(epa.product.variants[0]?.price || 0),
                                             eventProductAmountId: undefined
                                         },
                                     })
@@ -145,7 +145,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                         <FormLabel className={"text-xl"}>wähle aus:</FormLabel>
                                                                         <FormControl>
                                                                             <ToggleGroup
-                                                                                value={String(field.value)} // Force the ToggleGroup to always have a selected value
+                                                                                // Force the ToggleGroup to always have a selected value
                                                                                 onValueChange={(e) => {
                                                                                     if (e) {  // Only change the value when a valid option is selected
                                                                                         const variant = variantMap.get(Number(e));
@@ -156,9 +156,11 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                         setValue("variantId", Number(e));
                                                                                     }
                                                                                 }}
+                                                                                //defaultChecked={epa.product.variants[0].id === field.value}
                                                                                 defaultValue={`${epa.product.variants[0].id}`} // Ensure default selection on initial load
                                                                                 type="single"
                                                                                 variant="outline"
+                                                                                value={String(field.value)}
                                                                             >
                                                                                 {epa.product.variants.map((v: Variant) => (
                                                                                     <ToggleGroupItem
