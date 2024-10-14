@@ -7,5 +7,6 @@ export type CartItem = {
     amount: number;
     cartId?: number;
     variant: Variant | undefined;
-    eventProductAmountId?: number | null
+    eventProductAmountId?: number | null;
+    eventProductAmountLeft?: number | null
 }

@@ -5,12 +5,31 @@ import {MinusIcon, PlusIcon} from "@/app/icons/icons";
 import {Trash2} from "lucide-react";
 import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
 import {useSession} from "next-auth/react";
+import {useAtom} from "jotai/index";
+import {eventProductAmountsAtom} from "@/app/atoms/event-product-amounts-atom";
+import {getSubTotalForEventProduct} from "@/lib/utils";
+import {useCallback} from "react";
+import {CartItem} from "@/types/cart-item";
+import {toast} from "@/components/ui/use-toast";
 
 export default function CartOverview() {
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
     const {data: session, status} = useSession()
+    const [eventProductAmountMap, setEventProductAmountMap]  = useAtom(eventProductAmountsAtom);
 
     const total = cart.total
+
+    const handleAddShoppingCartItem =  (item: CartItem) => {
+        const subTotal = getSubTotalForEventProduct(item.eventProductAmountId || 0, cart);
+        if (item.variant?.stockMultiplier * item.amount + subTotal > item.eventProductAmountLeft) {
+            toast({
+                title: `Bestellmenge ist grösser als unser Vorrat. Überprüfe die gewählte Menge und die Menge der Produkte in deinem Warenkorb. \nWir haben insgesamt noch ${eventProductAmountMap.get(item.eventProductAmountId || 0)?.amountLeft}kg an Lager.`,
+            })
+        } else {
+            addShoppingCartItem(item)
+        }
+
+    }
 
     return (
         <div className="max-w-screen-lg mx-auto p-4">
@@ -22,6 +41,7 @@ export default function CartOverview() {
                         <p className="text-2xl text-gray-500">Der Warenkorb ist leer.</p>
                     ) : (
                         cart.items.map((item) => (
+
                             <div key={item.id} className="flex items-center justify-between py-4 border-b last:border-b-0">
                                 <div className="flex items-center space-x-4">
                                     <div>
@@ -46,7 +66,7 @@ export default function CartOverview() {
                                         <Button
                                             onClick={e => {
                                                 e.preventDefault()
-                                                addShoppingCartItem({...item, amount: 1})
+                                                handleAddShoppingCartItem({...item, amount: 1})
                                             }}
                                             variant="ghost"
                                             size="icon"

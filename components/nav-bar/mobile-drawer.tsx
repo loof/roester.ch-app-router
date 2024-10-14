@@ -7,11 +7,23 @@ import NavigationLinks from "@/components/nav-bar/navigation-links";
 import LoginLogoutListItemDesktop from "@/components/nav-bar/login-logout-list-item-desktop";
 import ShoppingCartIcon from "@/components/shopping-cart-icon";
 import LoginLogoutListItemMobile from "@/components/nav-bar/login-logout-list-item-mobile";
+import {useEffect, useState} from "react";
+import {useSession} from "next-auth/react";
 
 
 export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onClose: () => void}) {
     const pathname = usePathname()
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const {data: session} = useSession();
 
+
+    useEffect(() => {
+        if (session?.user?.accessToken) {
+            setLoggedIn(true);
+        } else {
+            setLoggedIn(false);
+        }
+    }, [session]);
 
     return (
         <div
@@ -36,10 +48,12 @@ export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onC
                     })
                 }
 
-                <li className={"pb-7"}><Link onClick={onClose} className={clsx('text-3xl hover:text-primary', {
-                    'text-primary': pathname.startsWith("/profile"),
-                    'text-primary-foreground': !pathname.startsWith("/profile")
-                })} href={"/profile"}>Profil</Link></li>
+                {isLoggedIn &&
+                    <li className={"pb-7"}><Link onClick={onClose} className={clsx('text-3xl hover:text-primary', {
+                        'text-primary': pathname.startsWith("/profile"),
+                        'text-primary-foreground': !pathname.startsWith("/profile")
+                    })} href={"/profile"}>Profil</Link></li>}
+
 
                 <li className={"pb-7"}><Link onClick={onClose} className={clsx('text-3xl hover:text-primary', {
                     'text-primary': pathname.startsWith("/cart"),

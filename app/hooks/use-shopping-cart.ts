@@ -10,6 +10,7 @@ import {v4 as uuidv4} from 'uuid';
 const LOCAL_STORAGE_KEY = 'shopping_cart';
 
 export function useShoppingCart() {
+
     const [cart, setCart] = useAtom(cartAtom);
     const { data: session, status } = useSession();
     const isAuthenticated = status === 'authenticated';

@@ -3,18 +3,22 @@ import {Roast} from "@/types/roast";
 import {useEffect, useState} from "react";
 import {Product} from "@/types/product";
 import {EventProductAmount} from "@/types/event-product-amount";
+import {useAtom} from "jotai";
+import {eventProductAmountsAtom} from "@/app/atoms/event-product-amounts-atom";
+import {variantsAtom} from "@/app/atoms/variants-atom";
+import {productsAtom} from "@/app/atoms/products-atom";
+
 
 export default function useEventCache(roast : Roast) {
 
 
     useEffect(() => {
         if (!roast) return;
-
     }, [roast]);
 
-    const [variantMap, setVariantMap]  = useState(new Map<number, Variant>());
-    const [eventProductAmountMap, setEventProductAmountMap]  = useState(new Map<number, EventProductAmount>());
-    const [productMap, setProductMap] = useState(new Map<number, Product>)
+    const [variantMap, setVariantMap]  = useAtom(variantsAtom);
+    const [eventProductAmountMap, setEventProductAmountMap]  = useAtom(eventProductAmountsAtom);
+    const [productMap, setProductMap] = useAtom(productsAtom)
 
     roast.eventProductAmounts.forEach(eventProductAmount => {
 

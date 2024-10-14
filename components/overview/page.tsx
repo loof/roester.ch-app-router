@@ -75,7 +75,6 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
         }
     });
 
-
     function onSubmit(values: z.infer<typeof formSchema>) {
         const variantId = Number(values.variantId); // Convert to number here
         addShoppingCartItem({
@@ -84,7 +83,8 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
             variantId: variantId,
             amount: values.amount,
             variant: variantMap.get(variantId),
-            eventProductAmountId: values.eventProductAmountId
+            eventProductAmountId: values.eventProductAmountId,
+            eventProductAmountLeft: eventProductAmountMap.get(values.eventProductAmountId || 0)?.amountLeft
         }).then(() => {
             toast({
                 title: "Auswahl wurde dem Warenkorb hinzugefügt.",
