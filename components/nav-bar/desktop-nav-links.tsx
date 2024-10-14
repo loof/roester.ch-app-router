@@ -2,7 +2,7 @@ import Link from 'next/link';
 import NavigationLinks from "@/components/nav-bar/navigation-links";
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
-import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
+import LoginLogoutListItemDesktop from "@/components/nav-bar/login-logout-list-item-desktop";
 import ShoppingCartIcon from "@/components/shopping-cart-icon";
 import {
     DropdownMenu,
@@ -34,7 +34,7 @@ export default function DesktopNavLinks() {
 
             {
                 !pathname.startsWith("/login") &&
-                 <LoginLogoutListItem  />
+                 <LoginLogoutListItemDesktop  />
             }
 
             <li><Link href={"/cart"}><ShoppingCartIcon /></Link></li>

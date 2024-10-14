@@ -4,8 +4,9 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import {clsx} from "clsx";
 import {usePathname} from "next/navigation";
 import NavigationLinks from "@/components/nav-bar/navigation-links";
-import LoginLogoutListItem from "@/components/nav-bar/login-logout-list-item";
+import LoginLogoutListItemDesktop from "@/components/nav-bar/login-logout-list-item-desktop";
 import ShoppingCartIcon from "@/components/shopping-cart-icon";
+import LoginLogoutListItemMobile from "@/components/nav-bar/login-logout-list-item-mobile";
 
 
 export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onClose: () => void}) {
@@ -35,11 +36,18 @@ export default function MobileDrawer({ isOpen, onClose } : {isOpen: boolean, onC
                     })
                 }
 
-                <Link onClick={onClose} className={clsx('text-3xl pt-10 hover:text-primary', {
+                <li className={"pb-7"}><Link onClick={onClose} className={clsx('text-3xl hover:text-primary', {
+                    'text-primary': pathname.startsWith("/profile"),
+                    'text-primary-foreground': !pathname.startsWith("/profile")
+                })} href={"/profile"}>Profil</Link></li>
+
+                <li className={"pb-7"}><Link onClick={onClose} className={clsx('text-3xl hover:text-primary', {
                     'text-primary': pathname.startsWith("/cart"),
                     'text-primary-foreground': !pathname.startsWith("/cart")
-                })} href={"/cart"}>Warenkorb <ShoppingCartIcon/></Link>
+                })} href={"/cart"}>Warenkorb <ShoppingCartIcon/></Link></li>
 
+
+                <LoginLogoutListItemMobile onClose={onClose}/>
 
 
             </ul>

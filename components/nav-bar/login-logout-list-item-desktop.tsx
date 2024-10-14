@@ -15,7 +15,7 @@ import {Button} from "@/components/ui/button";
 import {LogIn, LogOut, Settings, User} from "lucide-react";
 import {router} from "next/client";
 
-export default function LoginLogoutListItem({className} : {className?: string}) {
+export default function LoginLogoutListItemDesktop({className} : {className?: string}) {
     const pathname = usePathname();
     const {data: session} = useSession();
     const [isLoggedIn, setLoggedIn] = useState(false);
