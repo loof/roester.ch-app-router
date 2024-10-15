@@ -21,7 +21,7 @@ export default function CartOverview() {
 
     const handleAddShoppingCartItem =  (item: CartItem) => {
         const subTotal = getSubTotalForEventProduct(item.eventProductAmountId || 0, cart);
-        if (item.variant?.stockMultiplier * item.amount + subTotal > item.eventProductAmountLeft) {
+        if ((item.variant?.stockMultiplier || 0) * item.amount + subTotal > (item.eventProductAmountLeft || 0)) {
             toast({
                 title: `Bestellmenge ist grösser als unser Vorrat. Überprüfe die gewählte Menge und die Menge der Produkte in deinem Warenkorb. \nWir haben insgesamt noch ${eventProductAmountMap.get(item.eventProductAmountId || 0)?.amountLeft}kg an Lager.`,
             })
