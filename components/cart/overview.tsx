@@ -26,7 +26,7 @@ export default function CartOverview() {
                 title: `Bestellmenge ist grösser als unser Vorrat. Überprüfe die gewählte Menge und die Menge der Produkte in deinem Warenkorb. \nWir haben insgesamt noch ${eventProductAmountMap.get(item.eventProductAmountId || 0)?.amountLeft}kg an Lager.`,
             })
         } else {
-            addShoppingCartItem(item)
+            addShoppingCartItem(item, true)
         }
 
     }

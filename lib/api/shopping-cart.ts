@@ -20,23 +20,32 @@ export async function getCart(token: string, cartId: number) {
     return data
 }
 
-export async function createCartItems(token: string, cartId: number, cartItems: CartItem[]) {
-    const response = await fetch(`${URL}/carts/${cartId}/items`, {
+export async function createCartItems(
+    token: string,
+    cartId: number,
+    cartItems: CartItem[],
+    add: boolean
+) {
+    // Conditionally append the ?add=true query parameter if 'add' is true
+    const url = `${URL}/carts/${cartId}/items${add ? '?add=true' : ''}`;
+
+    const response = await fetch(url, {
         method: "POST",
         headers: {
             "content-type": "application/json",
             "authorization": `Bearer ${token}`
         },
         body: JSON.stringify(cartItems)
-    })
+    });
 
     if (!response.ok) {
-        throw new Error("An error occured while fetching")
+        throw new Error("An error occurred while fetching");
     }
 
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
 }
+
 
 export async function updateCartItem(token: string, cartItem: CartItem) {
     const response = await fetch(`${URL}/carts/${cartItem.cartId}/items/${cartItem.id}`, {

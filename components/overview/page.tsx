@@ -85,7 +85,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
             variant: variantMap.get(variantId),
             eventProductAmountId: values.eventProductAmountId,
             eventProductAmountLeft: eventProductAmountMap.get(values.eventProductAmountId || 0)?.amountLeft
-        }).then(() => {
+        }, false).then(() => {
             toast({
                 title: "Auswahl wurde dem Warenkorb hinzugefügt.",
             })

@@ -90,12 +90,12 @@ export function useShoppingCart() {
     }, [cart, isAuthenticated]);
 
     // Add or update item in the shopping cart
-    const addShoppingCartItem = async (cartItem: CartItem) => {
+    const addShoppingCartItem = async (cartItem: CartItem, add: boolean) => {
 
         if (isAuthenticated && session?.user?.accessToken && session?.user?.cartId && !isSyncing){
             setIsSyncing(true);  // Start syncing process
             try {
-                const newCart = await createCartItems(session.user.accessToken, session.user.cartId, [cartItem]);
+                const newCart = await createCartItems(session.user.accessToken, session.user.cartId, [cartItem], add);
                 setCart(newCart)
             } catch (error) {
                 console.error("Error syncing cart item to server", error);
@@ -107,11 +107,19 @@ export function useShoppingCart() {
                 const updatedCart : Cart  = {...prevCart};
                 const existingItem  = prevCart.items.find((item) => item.eventId === cartItem.eventId && item.variantId === cartItem.variantId)
                 if (existingItem) {
-                    existingItem.amount += cartItem.amount;
+                    if (add) {
+                        // If 'add' is true, take the maximum of the existing amount and the new amount
+                        existingItem.amount += cartItem.amount;
+                    } else {
+                        // If 'add' is false, sum the existing amount and the new amount
+                        existingItem.amount = Math.max(existingItem.amount, cartItem.amount);
+                    }
                 } else {
+                    // If there is no existing item, create a new one and assign an ID
                     cartItem.id = getNextCartItemId();
                     updatedCart.items.push(cartItem);
                 }
+
 
                 // Calculate the new total
                 updatedCart.total = calculateCartTotal(updatedCart.items);
