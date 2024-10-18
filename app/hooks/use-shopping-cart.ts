@@ -53,7 +53,7 @@ export function useShoppingCart() {
                         const parsedLocalCart = JSON.parse(localCart);
 
                         if (parsedLocalCart.items.length > 0) {
-                            const cart = await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart.items);
+                            const cart = await createCartItems(session.user.accessToken, session.user.cartId, parsedLocalCart.items, false);
                             setCart(cart);
                         }
 
