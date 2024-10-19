@@ -12,16 +12,12 @@ import {
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Separator} from "@/components/ui/separator"
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from "@/components/ui/accordion"
-import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
+import {useShoppingCart} from "@/app/hooks/use-shopping-cart"
+import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog"
 
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
     const shippingAddress = {
         name: "Yves Peissard",
@@ -36,6 +32,21 @@ export default function Checkout() {
     const shippingCost = 5.99
     const tax = subtotal * 0.08 // Assuming 8% tax rate
     const total = subtotal + shippingCost + tax
+
+    // Handle order confirmation
+    const handleOrderConfirmation = () => {
+        setIsModalOpen(true);  // Open modal on click
+    };
+
+    const confirmOrder = () => {
+        // Here you can add the logic to proceed with the order
+        console.log("Order confirmed!");
+        setIsModalOpen(false); // Close modal after confirmation
+    };
+
+    const cancelOrder = () => {
+        setIsModalOpen(false); // Close modal if user cancels
+    };
 
     return (
         <div className="container mx-auto px-4 max-w-screen-lg">
@@ -100,7 +111,7 @@ export default function Checkout() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full">
+                                <Button className="w-full" onClick={handleOrderConfirmation}>
                                     <CreditCard className="mr-2 h-4 w-4"/>Verbindlich bestellen
                                 </Button>
                             </CardFooter>
@@ -117,6 +128,22 @@ export default function Checkout() {
                     </div>
                 )}
             </div>
+
+            {/* Modal component */}
+            {isModalOpen && (
+                <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="font-sans normal-case text-3xl">Bestellbestätigung</DialogTitle>
+                        </DialogHeader>
+                        <p className={"text-2xl"}>Willst du wirklich kostenpflichtig bestellen?</p>
+                        <DialogFooter>
+                            <Button onClick={confirmOrder}>Ja</Button>
+                            <Button variant="outline" onClick={cancelOrder}>Nein</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            )}
         </div>
     )
 }
