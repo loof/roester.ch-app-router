@@ -18,7 +18,7 @@ const config = {
   		body: ['Montserrat', 'sans-serif']
   	},
   	container: {
-  		center: 'true'
+  		center: true
   	},
   	extend: {
   		colors: {

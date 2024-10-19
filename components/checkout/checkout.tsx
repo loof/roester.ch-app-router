@@ -28,7 +28,7 @@ export default function Checkout() {
         country: "Schweiz"
     }
 
-    const subtotal = cart.items.reduce((sum, item) => sum + item.variant?.price * item.amount, 0)
+    const subtotal = cart.items.reduce((sum, item) => sum + (item.variant?.price ?? 0) * item.amount, 0)
     const shippingCost = 5.99
     const tax = subtotal * 0.08 // Assuming 8% tax rate
     const total = subtotal + shippingCost + tax
@@ -66,7 +66,8 @@ export default function Checkout() {
                                             <p className="text-xl text-muted-foreground">{item.variant?.name}</p>
                                             <p className="text-lg">Anzahl: {item.amount}</p>
                                         </div>
-                                        <p className={"text-2xl"}>CHF {(item.variant?.price * item.amount).toFixed(2)}</p>
+                                        <p className={"text-2xl"}>CHF {(item.variant?.price ?? 0).toFixed(2)}</p>
+
                                     </div>
                                 ))
                             )}
