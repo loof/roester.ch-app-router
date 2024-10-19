@@ -66,7 +66,7 @@ export default function Checkout() {
                                             <p className="text-xl text-muted-foreground">{item.variant?.name}</p>
                                             <p className="text-lg">Anzahl: {item.amount}</p>
                                         </div>
-                                        <p className={"text-2xl"}>CHF {(item.variant?.price ?? 0).toFixed(2)}</p>
+                                        <p className={"text-2xl mt-2"}>CHF {(item.variant?.price ?? 0).toFixed(2)}</p>
 
                                     </div>
                                 ))
