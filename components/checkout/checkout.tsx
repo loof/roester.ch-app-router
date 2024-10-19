@@ -56,7 +56,7 @@ export default function Checkout() {
 
     return (
         <div className="container mx-auto px-4 max-w-screen-lg">
-            <h1 className="font-sans normal-case text-3xl">Bestellübersicht</h1>
+            <h1 className="font-sans normal-case">Bestellübersicht</h1>
 
             {/* Add gap between grid items */}
             <div className="grid grid-cols-1 gap-y-8 mb-20 mt-12">

@@ -50,8 +50,6 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
-        mode: "onChange",         // Validate on submit
-        reValidateMode: "onBlur", // Revalidate when a field is blurred
         defaultValues: initialData || {
             companyName: "",
             firstname: "",
