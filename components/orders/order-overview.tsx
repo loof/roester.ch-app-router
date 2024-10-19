@@ -31,7 +31,7 @@ import {
     DollarSign,
     Package,
     Search,
-    ExternalLink
+    ExternalLink, SearchIcon
 } from 'lucide-react'
 import {Order} from "@/types/order";
 
@@ -84,10 +84,10 @@ export default function OrderOverview() {
 
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Order Overview</h1>
+        <div className="container mx-auto px-4 max-w-screen-lg">
+            <h1 className="font-sans normal-case">Bestellungen</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-12">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
@@ -115,18 +115,22 @@ export default function OrderOverview() {
                         <div className="text-2xl font-bold">{pendingOrders}</div>
                     </CardContent>
                 </Card>
-            </div>
+            </div>*/}
 
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-items-center gap-3 items-center mb-4 mt-12">
+
+
+                <SearchIcon className="ml-2" />
+
                 <Input
-                    placeholder="Search orders..."
+                    placeholder="Bestellungen suchen..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="max-w-sm"
+                    className="max-w-sm ml-2"
                 />
-                <Button variant="outline" className="ml-2">
+             {/*   <Button variant="outline" className="ml-2">
                     <Search className="mr-2 h-4 w-4" /> Search
-                </Button>
+                </Button>*/}
             </div>
 
             <div className="rounded-md border">

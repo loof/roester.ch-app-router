@@ -9,6 +9,11 @@ export default function NavigationLinks() {
             "href": "/roasts/prev",
             "text": "Letzte Röstung",
             "className": ""
+        },
+        {
+            "href": "/orders",
+            "text": "Meine Bestellungen",
+            "className": ""
         }
     ]
 }

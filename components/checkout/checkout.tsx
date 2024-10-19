@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import {useState} from 'react'
 import {
     CreditCard,
     Truck,
@@ -9,9 +9,9 @@ import {
     ChevronDown,
     ChevronUp
 } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
+import {Separator} from "@/components/ui/separator"
 import {
     Accordion,
     AccordionContent,
@@ -24,18 +24,17 @@ export default function Checkout() {
 
     // This would typically come from your application's state or API
     const cartItems = [
-        { id: 1, name: "Premium T-Shirt", variant: "Large / Black", price: 29.99, quantity: 2 },
-        { id: 2, name: "Slim Fit Jeans", variant: "32W x 32L / Blue Denim", price: 59.99, quantity: 1 },
-        { id: 3, name: "Classic Watch", variant: "Silver", price: 129.99, quantity: 1 },
+        {id: 1, name: "Rohkaffee Bio & Fair: Tansania Robusta", variant: "320g", price: 29.99, quantity: 2},
+        {id: 2, name: "Herbströstung 2024", variant: "560g", price: 59.99, quantity: 1},
     ]
 
     const shippingAddress = {
-        name: "John Doe",
-        street: "123 Main St",
-        city: "Anytown",
-        state: "CA",
-        zip: "12345",
-        country: "United States"
+        name: "Yves Peissard",
+        street: "Kasparstrasse 17",
+        city: "3027",
+        state: "Bern",
+        zip: "",
+        country: "Schweiz"
     }
 
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -44,49 +43,42 @@ export default function Checkout() {
     const total = subtotal + shippingCost + tax
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Review Your Order</h1>
+        <div className="container mx-auto px-4 max-w-screen-lg">
+            <h1 className="font-sans normal-case">Bestellübersicht</h1>
 
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-3 mt-12">
                 <div className="md:col-span-2">
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="text-xl">Order Summary</CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                        <CardContent className={"mt-8"}>
                             {cartItems.map((item) => (
                                 <div key={item.id} className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <h3 className="font-semibold">{item.name}</h3>
-                                        <p className="text-sm text-muted-foreground">{item.variant}</p>
-                                        <p className="text-sm">Quantity: {item.quantity}</p>
+                                    <div className={"flex flex-col gap-1"}>
+                                        <h3 className={"text-2xl mt-2 max-w-[300px]"}>{item.name}</h3>
+                                        <p className="text-xl text-muted-foreground">{item.variant}</p>
+                                        <p className="text-lg">Anzahl: {item.quantity}</p>
                                     </div>
-                                    <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                                    <p className={"text-2xl"}>CHF {(item.price * item.quantity).toFixed(2)}</p>
                                 </div>
                             ))}
                         </CardContent>
                     </Card>
 
-                    <Card className="mt-6">
+                    <Card className={"mt-12"}>
                         <CardHeader>
-                            <CardTitle className="text-xl">Shipping Address</CardTitle>
+                            <CardTitle className="text-2xl">Lieferadresse</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <Accordion type="single" collapsible>
-                                <AccordionItem value="address">
-                                    <AccordionTrigger>
-                                        <div className="flex items-center">
-                                            <MapPin className="mr-2 h-4 w-4" />
-                                            {shippingAddress.name}, {shippingAddress.city}
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <p>{shippingAddress.street}</p>
-                                        <p>{shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
-                                        <p>{shippingAddress.country}</p>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
+                        <CardContent className={"text-sm"}>
+
+
+                            {/*<div className="flex items-center">
+                                <MapPin className="mr-2 h-4 w-4"/>
+                                {shippingAddress.name}, {shippingAddress.city}
+                            </div>*/}
+
+                            <p className={"text-xl"}>{shippingAddress.street}</p>
+                            <p className={"text-xl"}> {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
+                            <p className={"text-xl"}>{shippingAddress.country}</p>
+
                         </CardContent>
                     </Card>
                 </div>
@@ -94,41 +86,37 @@ export default function Checkout() {
                 <div>
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-xl">Order Total</CardTitle>
+                            <CardTitle className="text-2xl">Bestellung Total</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
                                 <div className="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span>${subtotal.toFixed(2)}</span>
+                                    <span className={"text-lg"}>Subtotal</span>
+                                    <span>CHF {subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span>Shipping</span>
-                                    <span>${shippingCost.toFixed(2)}</span>
+                                    <span className={"text-lg mb-2"}>Versand</span>
+                                    <span>CHF {shippingCost.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Tax</span>
-                                    <span>${tax.toFixed(2)}</span>
-                                </div>
-                                <Separator />
+                                <Separator/>
                                 <div className="flex justify-between font-bold">
-                                    <span>Total</span>
-                                    <span>${total.toFixed(2)}</span>
+                                    <span className={"text-2xl mt-2"}>Total</span>
+                                    <span className={"text-2xl mt-2"}>CHF {total.toFixed(2)}</span>
                                 </div>
                             </div>
                         </CardContent>
                         <CardFooter>
                             <Button className="w-full">
-                                <CreditCard className="mr-2 h-4 w-4" /> Proceed to Payment
+                                <CreditCard className="mr-2 h-4 w-4"/>Verbindlich bestellen
                             </Button>
                         </CardFooter>
                     </Card>
 
-                    <Card className="mt-6">
+                    <Card className="mt-12">
                         <CardContent className="pt-6">
                             <div className="flex items-center text-sm text-muted-foreground">
-                                <Truck className="mr-2 h-4 w-4" />
-                                <span>Estimated delivery: 3-5 business days</span>
+                                <Truck className="mr-6 h-8 w-8"/>
+                                <span className={"text-xl"}>Geschätzte Lieferzeit: 3-5 Werktage</span>
                             </div>
                         </CardContent>
                     </Card>
