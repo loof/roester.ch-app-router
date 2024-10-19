@@ -23,10 +23,10 @@ export default function OrderDetail() {
     const currentStatusIndex = statuses.findIndex(s => s.key === orderDetails.status)
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 max-w-screen-lg">
             <h1 className="font-sans normal-case">Order Status</h1>
 
-            <Card className="mb-8">
+            <Card className="mb-8 mt-12">
                 <CardHeader>
                     <CardTitle>Order #{orderDetails.orderNumber}</CardTitle>
                     <CardDescription>Placed on {orderDetails.orderDate}</CardDescription>

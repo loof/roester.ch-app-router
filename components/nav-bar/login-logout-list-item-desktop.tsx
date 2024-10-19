@@ -34,7 +34,7 @@ export default function LoginLogoutListItemDesktop({className} : {className?: st
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
                     <User className="h-5 w-5"/>
-                    <span className="sr-only">Benutzermenü öffnen</span>
+                    <span className="sr-only">Benutzermenu öffnen</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

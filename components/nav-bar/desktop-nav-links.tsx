@@ -1,26 +1,31 @@
 import Link from 'next/link';
-import NavigationLinks from "@/components/nav-bar/navigation-links";
-import {clsx} from "clsx";
-import {usePathname} from "next/navigation";
+import NavigationLinks from "@/components/nav-bar/navigation-links"; // Assuming NavigationLinks returns an array of links
+import { clsx } from "clsx";
+import { usePathname } from "next/navigation";
 import LoginLogoutListItemDesktop from "@/components/nav-bar/login-logout-list-item-desktop";
 import ShoppingCartIcon from "@/components/shopping-cart-icon";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {Button} from "@/components/ui/button";
-import {LogIn, LogOut, Settings, User} from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function DesktopNavLinks() {
-    const pathname = usePathname()
-    
+    const pathname = usePathname();
+    const { data: session } = useSession();
+    const [isLoggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        if (session?.user?.accessToken) {
+            setLoggedIn(true);
+        }
+    }, [pathname, session]);
+
     return (
         <ul className="flex flex-row space-x-6">
             {
-                NavigationLinks().map((link, index) => {
+                // Filter navigation links based on the isPrivate property
+                NavigationLinks().filter(link =>
+                    // Show if not private, or show if private and the user is logged in
+                    !link.isPrivate || (link.isPrivate && isLoggedIn)
+                ).map((link, index) => {
                     return (
                         <li key={index} className={clsx('text-xl mt-1 hover:text-primary', {
                             'text-primary': pathname.startsWith(link.href),
@@ -34,13 +39,10 @@ export default function DesktopNavLinks() {
 
             {
                 !pathname.startsWith("/login") &&
-                 <LoginLogoutListItemDesktop  />
+                <LoginLogoutListItemDesktop />
             }
 
             <li><Link href={"/cart"}><ShoppingCartIcon /></Link></li>
-
-
-
         </ul>
     );
 }

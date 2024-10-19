@@ -3,17 +3,20 @@ export default function NavigationLinks() {
         {
             "href": "/roasts/next",
             "text": "Nächste Röstung",
-            "className": ""
+            "className": "",
+            isPrivate: false,
         },
         {
             "href": "/roasts/prev",
             "text": "Letzte Röstung",
-            "className": ""
+            "className": "",
+            isPrivate: false,
         },
         {
             "href": "/orders",
             "text": "Meine Bestellungen",
-            "className": ""
+            "className": "",
+            isPrivate: true,
         }
     ]
 }
