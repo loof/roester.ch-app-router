@@ -56,10 +56,11 @@ export default function Checkout() {
 
     return (
         <div className="container mx-auto px-4 max-w-screen-lg">
-            <h1 className="font-sans normal-case text-3xl mb-8">Bestellübersicht</h1>
+            <h1 className="font-sans normal-case text-3xl">Bestellübersicht</h1>
 
-            <div className="grid gap-8 md:grid-cols-3 mt-12">
-                <div className="md:col-span-2">
+            {/* Add gap between grid items */}
+            <div className="grid grid-cols-1 gap-y-8 mb-20 mt-12">
+
                     <Card>
                         <CardContent className="mt-8">
                             {cart.items.length === 0 ? (
@@ -81,10 +82,10 @@ export default function Checkout() {
 
                     {cart.items.length > 0 && (
                         <>
-                            <Card className="mt-12">
+                            <Card>
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle className="text-2xl">Lieferadresse</CardTitle>
-                                    <Link className={"text-primary underline"} href={"/profile"}>Bearbeiten</Link>
+                                    <Link className={"hover:text-primary"} href={"/profile/address/edit"}>Bearbeiten</Link>
                                 </CardHeader>
                                 <CardContent className="text-sm">
                                     <p className="text-xl">{shippingAddress.street}</p>
@@ -93,7 +94,7 @@ export default function Checkout() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="mt-12">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle className="text-2xl">Versandmethode</CardTitle>
                                 </CardHeader>
@@ -122,10 +123,10 @@ export default function Checkout() {
                             </Card>
                         </>
                     )}
-                </div>
+
 
                 {cart.items.length > 0 && (
-                    <div>
+                   <>
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-2xl">Bestellung Total</CardTitle>
@@ -149,12 +150,12 @@ export default function Checkout() {
                             </CardContent>
                             <CardFooter>
                                 <Button className="w-full" onClick={handleOrderConfirmation}>
-                                    <CreditCard className="mr-2 h-4 w-4"/>Verbindlich bestellen
+                                    <CreditCard className="mr-2 h-4 w-4"/>Kostenpflichtig bestellen
                                 </Button>
                             </CardFooter>
                         </Card>
 
-                        <Card className="mt-12">
+                        <Card>
                             <CardContent className="pt-6">
                                 <div className="flex items-center text-sm text-muted-foreground">
                                     <Truck className="mr-6 h-8 w-8"/>
@@ -164,7 +165,7 @@ export default function Checkout() {
                                 </div>
                             </CardContent>
                         </Card>
-                    </div>
+                   </>
                 )}
             </div>
 
@@ -174,9 +175,9 @@ export default function Checkout() {
                         <DialogTitle className="font-sans normal-case text-3xl">Bestellbestätigung</DialogTitle>
                     </DialogHeader>
                     <p className="text-2xl">Willst du wirklich kostenpflichtig bestellen?</p>
-                    <DialogFooter>
-                        <Button onClick={confirmOrder}>Ja</Button>
-                        <Button variant="outline" onClick={cancelOrder}>Nein</Button>
+                    <DialogFooter className={"flex gap-3"}>
+                        <Button className={"min-w-20"} onClick={confirmOrder}>Ja</Button>
+                        <Button className={"min-w-20"} variant="outline" onClick={cancelOrder}>Nein</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
