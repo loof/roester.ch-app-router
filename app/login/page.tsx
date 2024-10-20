@@ -68,11 +68,11 @@ export default function LoginPage() {
     }
 
     return (
-        <main className={"container max-w-md text-center"}>
-            <h1 className={"mb-10 text-6xl"}>Login</h1>
+        <main className={"container max-w-md"}>
+            <h1 className="font-sans normal-case">Login</h1>
             {errors && errors.login && <h2>{errors.login}</h2>}
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-10 m-10">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-10 mt-12">
                     <FormField
                         control={form.control}
                         name="email"

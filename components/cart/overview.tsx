@@ -32,16 +32,16 @@ export default function CartOverview() {
     };
 
     return (
-        <div className="max-w-screen-lg mx-auto p-4">
+        <div className="max-w-screen-lg mx-auto px-4">
             <h1 className={"font-sans normal-case"}>Warenkorb</h1>
             <div className="shadow-md rounded-lg overflow-hidden">
-                <div className="p-4">
+                <div className={"mt-12"}>
                     {/* Check if cart is empty */}
                     {cart.items.length === 0 ? (
                         <p className="text-2xl text-gray-500">Der Warenkorb ist leer.</p>
                     ) : (
                         cart.items.map((item) => (
-                            <div key={item.id} className="flex items-center justify-between py-4 border-b last:border-b-0">
+                            <div key={item.id} className="flex items-center justify-between border-b last:border-b-0">
                                 <div className="flex items-center space-x-4">
                                     <div>
                                         <h2 className="font-sans text-primary-foreground text-2xl normal-case min-w-[107px]">
@@ -101,7 +101,7 @@ export default function CartOverview() {
                 </div>
                 {/* Show the total only if there are items in the cart */}
                 {cart.items.length > 0 && (
-                    <div className="p-4">
+                    <div className={"mt-12"}>
                         <div className="flex justify-between items-center">
                             <span className="text-3xl">Total</span>
                             <span className="text-3xl">CHF {total.toFixed(2)}</span>
