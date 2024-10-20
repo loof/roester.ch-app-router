@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from "react";
 import ErrorMessage from "@/components/error-message";
+import {AppUser} from "@/types/app-user";
+import {useState} from "react";
 
 // Define schema for validation
 const FormSchema = z.object({
@@ -28,38 +29,27 @@ const FormSchema = z.object({
     postalCode: z.string().min(1, { message: "Die Postleitzahl muss angegeben werden" }),
 });
 
-export default function ProfileAddressEditForm({ userId }: { userId: string }) {
+export default function ProfileAddressEditForm({appUser, className}: { appUser: AppUser, className?: string }) {
+
     const [errors, setErrors] = useState<{ update?: string }>({});
     const [isLoading, setLoading] = useState(true);
     const [initialData, setInitialData] = useState(null);
     const router = useRouter();
     const generic_error_message = "Etwas ist schief gegangen. Versuche es erneut.";
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                //const userData = await getAppUser(userId);
-                //setInitialData(userData); // Populate form with existing data
-                setLoading(false);
-            } catch (error) {
-                setErrors({ update: generic_error_message });
-            }
-        }
-        fetchData();
-    }, [userId]);
-
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: initialData || {
-            companyName: "",
-            firstname: "",
-            lastname: "",
-            street: "",
-            streetNumber: "",
-            city: "",
-            postalCode: "",
+            companyName: appUser?.companyName ?? "",
+            firstname: appUser?.firstname ?? "",
+            lastname: appUser?.lastname ?? "",
+            street: appUser?.location?.street ?? "",
+            streetNumber: appUser?.location?.streetNumber ?? "",
+            city: appUser?.location?.city ?? "",
+            postalCode: appUser?.location?.postalCode ?? "",
         },
     });
+
 
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -73,6 +63,8 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                 postalCode: data.postalCode,
                 companyName: data.companyName || null,
             };
+
+            console.log(`updatedUser: ${JSON.stringify(updatedUser)}`);
 
             //const res = await updateAppUser(userId, updatedUser);
 
@@ -121,7 +113,7 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                         render={({field}) => (
                             <FormItem>
                                 <div className="text-left">
-                                    <FormLabel className="text-2xl">Vorname</FormLabel>
+                                    <FormLabel className="text-2xl">Vorname <span className={"text-primary"}>*</span></FormLabel>
                                 </div>
                                 <FormControl>
                                     <Input className="text-xl" placeholder="Vorname" {...field} />
@@ -137,7 +129,8 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                         render={({field}) => (
                             <FormItem>
                                 <div className="text-left">
-                                    <FormLabel className="text-2xl">Nachname</FormLabel>
+                                    <FormLabel className="text-2xl">Nachname <span
+                                        className={"text-primary"}>*</span></FormLabel>
                                 </div>
                                 <FormControl>
                                     <Input className="text-xl" placeholder="Nachname" {...field} />
@@ -155,7 +148,7 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                             render={({field}) => (
                                 <FormItem>
                                     <div className="text-left">
-                                        <FormLabel className="text-2xl">Strasse</FormLabel>
+                                        <FormLabel className="text-2xl">Strasse <span className={"text-primary"}>*</span></FormLabel>
                                     </div>
                                     <FormControl>
                                         <Input className="text-xl" placeholder="Strasse" {...field} />
@@ -171,7 +164,8 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                             render={({field}) => (
                                 <FormItem>
                                     <div className="text-left">
-                                        <FormLabel className="text-2xl">Hausnummer</FormLabel>
+                                        <FormLabel className="text-2xl">Hausnummer <span
+                                            className={"text-primary"}>*</span></FormLabel>
                                     </div>
                                     <FormControl>
                                         <Input className="text-xl" placeholder="Hausnummer" {...field} />
@@ -189,7 +183,8 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                             render={({field}) => (
                                 <FormItem>
                                     <div className="text-left">
-                                        <FormLabel className="text-2xl">PLZ</FormLabel>
+                                        <FormLabel className="text-2xl">PLZ <span
+                                            className={"text-primary"}>*</span></FormLabel>
                                     </div>
                                     <FormControl>
                                         <Input className="text-xl" placeholder="PLZ" {...field} />
@@ -205,7 +200,8 @@ export default function ProfileAddressEditForm({ userId }: { userId: string }) {
                             render={({field}) => (
                                 <FormItem>
                                     <div className="text-left">
-                                        <FormLabel className="text-2xl">Ort</FormLabel>
+                                        <FormLabel className="text-2xl">Ort <span
+                                            className={"text-primary"}>*</span></FormLabel>
                                     </div>
                                     <FormControl>
                                         <Input className="text-xl" placeholder="Ort" {...field} />

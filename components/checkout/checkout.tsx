@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import {
     CreditCard,
     Truck,
@@ -17,6 +17,8 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
@@ -85,7 +87,7 @@ export default function Checkout() {
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle className="text-2xl">Lieferadresse</CardTitle>
-                                    <Link className={"hover:text-primary"} href={"/profile/address/edit"}>Bearbeiten</Link>
+                                    <Link className={"hover:text-primary"} href={`/profile/address/edit`}>Bearbeiten</Link>
                                 </CardHeader>
                                 <CardContent className="text-sm">
                                     <p className="text-xl">{shippingAddress.street}</p>

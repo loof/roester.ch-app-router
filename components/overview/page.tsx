@@ -40,8 +40,6 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
     const {data: session, status} = useSession()
     const {variantMap, eventProductAmountMap} = useEventCache(roast)
 
-    console.log(roast)
-
     const formSchema = z.object({
         variantId: z.number().min(1, {message: "Bitte wähle eine Variante aus."}),
         amount: z.number().min(1, {message: "Bitte wähle eine Menge aus."}),
