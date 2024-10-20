@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import {undefined, z} from "zod";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -16,7 +16,11 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
 import ErrorMessage from "@/components/error-message";
 import {AppUser} from "@/types/app-user";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {updateAppUser} from "@/lib/api/app-user";
+import {useSession} from "next-auth/react";
+import App from "next/app";
+import {AppUserLight} from "@/types/app-user-light";
 
 // Define schema for validation
 const FormSchema = z.object({
@@ -36,6 +40,10 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
     const [initialData, setInitialData] = useState(null);
     const router = useRouter();
     const generic_error_message = "Etwas ist schief gegangen. Versuche es erneut.";
+    const {data: session} = useSession();
+    const [isLoggedIn, setLoggedIn] = useState(false);
+
+
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -54,19 +62,29 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         try {
-            const updatedUser = {
+            const updatedUser: AppUserLight = {
+                id: null,
                 firstname: data.firstname,
                 lastname: data.lastname,
-                street: data.street,
-                streetNumber: data.streetNumber,
-                city: data.city,
-                postalCode: data.postalCode,
                 companyName: data.companyName || null,
+                location: {
+                    id: appUser.location.id,
+                    street: data.street,
+                    streetNumber: data.streetNumber,
+                    city: data.city,
+                    postalCode: data.postalCode,
+                }
             };
+
 
             console.log(`updatedUser: ${JSON.stringify(updatedUser)}`);
 
-            //const res = await updateAppUser(userId, updatedUser);
+            if (!session?.user) {
+                throw new Error("User session is not available");
+            }
+
+            const res = await updateAppUser(session.user.accessToken, session.user.userId, updatedUser);
+
 
             /*if (res.ok) {
                 router.push("/profile");
@@ -100,7 +118,13 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
                                     <FormLabel className="text-2xl">Firmenname (Optional)</FormLabel>
                                 </div>
                                 <FormControl>
-                                    <Input className="text-xl" placeholder="Firmenname" {...field} />
+                                    <Input
+                                        className="text-xl"
+                                        placeholder="Firmenname"
+                                        {...field}
+                                        value={field.value ?? ""} // Handle null or undefined by defaulting to an empty string
+                                    />
+
                                 </FormControl>
                                 <FormMessage className="text-xl text-left"/>
                             </FormItem>

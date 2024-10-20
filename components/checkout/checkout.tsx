@@ -40,7 +40,7 @@ export default function Checkout() {
         express: 15,
         pickup: 0
     }
-    const shippingCost = shippingCosts[shippingMethod]
+    const shippingCost = shippingCosts[shippingMethod as keyof typeof shippingCosts];
     const total = subtotal + shippingCost
 
     const handleOrderConfirmation = () => {

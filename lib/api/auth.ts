@@ -1,5 +1,4 @@
 import {AppUser} from "@/types/app-user";
-import {createAppUser} from "@/lib/api/app-user";
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL
 

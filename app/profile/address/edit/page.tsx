@@ -14,10 +14,15 @@ export default async function ProfileAddressEditFormPage() {
    console.log(`session: ${JSON.stringify(session)}`)
 
    try {
-      appUser = await getAppUserById(session?.user?.accessToken, session?.user?.userId);
+      if (session?.user?.accessToken && session?.user?.userId) {
+         appUser = await getAppUserById(session.user.accessToken, session.user.userId);
+      } else {
+         throw new Error("Invalid session data: missing accessToken or userId.");
+      }
    } catch (error) {
       isError = true;
    }
+
 
    console.log(`appUser Server: ${appUser}`)
    console.log(`isError: ${isError}`)

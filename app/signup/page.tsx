@@ -16,7 +16,6 @@ import {Input} from "@/components/ui/input";
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from "react";
 import {useSearchParams} from 'next/navigation';
-import {createAppUser} from "@/lib/api/app-user";
 import ErrorMessage from "@/components/error-message";
 
 const passwordSchema = z

@@ -3,7 +3,6 @@ import { NextResponse, NextRequest } from "next/server";
 
 // internal imports
 import { signIn } from "@/auth";
-import {createAppUser} from "@/lib/api/app-user";
 import {AppUser} from "@/types/app-user";
 
 const URL = process.env.NEXT_PUBLIC_BASE_URL
