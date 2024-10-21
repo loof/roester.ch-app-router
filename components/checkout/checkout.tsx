@@ -29,7 +29,7 @@ import ErrorMessage from "@/components/error-message";
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [shippingMethod, setShippingMethod] = useState('standard');
+    const [shippingMethod, setShippingMethod] = useState('pickup');
     const [appUser, setAppUser] = useState<AppUserLight>();
     const pathname = usePathname();
     const { data: session } = useSession();
@@ -55,8 +55,8 @@ export default function Checkout() {
 
     const subtotal = cart.items.reduce((sum, item) => sum + (item.variant?.price ?? 0) * item.amount, 0)
     const shippingCosts = {
+        letter: 1.4,
         standard: 7,
-        express: 15,
         pickup: 0
     }
     const shippingCost = shippingCosts[shippingMethod as keyof typeof shippingCosts];
@@ -82,7 +82,7 @@ export default function Checkout() {
                 <h1 className="font-sans normal-case">Bestellübersicht</h1>
 
                 {/* Add gap between grid items */}
-                <div className="grid grid-cols-1 gap-y-8 mb-20 mt-12">
+                <div className="grid grid-cols-1 mb-20 mt-12">
 
                     <Card>
                         <CardContent className="mt-8">
@@ -115,43 +115,51 @@ export default function Checkout() {
 
                     {cart.items.length > 0 && (
                         <>
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between">
-                                    <CardTitle className="text-2xl">Lieferadresse</CardTitle>
-                                    <Link className={"hover:text-primary"}
-                                          href={`/profile/address/edit?next=${pathname}`}>Bearbeiten</Link>
-                                </CardHeader>
-                                <CardContent className="text-sm">
-                                    <p className="text-xl">{appUser?.firstname} {appUser?.lastname}</p>
-                                    <p className="text-xl">{appUser?.location.street} {appUser?.location.streetNumber}</p>
-                                    <p className="text-xl">{appUser?.location.postalCode} {appUser?.location.city}</p>
-                                    {appUser?.location && <p className="text-xl">Schweiz</p>}
-                                    {appUser?.location && <ErrorMessage className={"mt-5 text-primary-foreground"}>Achtung: Wir liefern nur in die Schweiz</ErrorMessage>}
-                                </CardContent>
-                            </Card>
+                            <div
+                                className={`mt-8 transition-all duration-300 ease-in-out overflow-hidden ${shippingMethod === "pickup" ? "opacity-0 max-h-0" : "opacity-100 max-h-[1000px]"}`}
+                            >
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between">
+                                        <CardTitle className="text-2xl">Lieferadresse</CardTitle>
+                                        <Link className={"hover:text-primary"}
+                                              href={`/profile/address/edit?next=${pathname}`}>Bearbeiten</Link>
+                                    </CardHeader>
+                                    <CardContent className="text-sm">
+                                        <p className="text-xl">{appUser?.firstname} {appUser?.lastname}</p>
+                                        <p className="text-xl">{appUser?.location.street} {appUser?.location.streetNumber}</p>
+                                        <p className="text-xl">{appUser?.location.postalCode} {appUser?.location.city}</p>
+                                        {appUser?.location && <p className="text-xl">Schweiz</p>}
+                                        {appUser?.location &&
+                                            <ErrorMessage className={"mt-5 text-primary-foreground"}>Achtung: Wir
+                                                liefern nur in die Schweiz</ErrorMessage>}
+                                    </CardContent>
+                                </Card>
+                            </div>
 
-                            <Card>
-                            <CardHeader>
+
+                            <Card className={`${shippingMethod !== 'pickup' && 'mt-8'}`}>
+                                <CardHeader>
                                     <CardTitle className="text-2xl">Versandmethode</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <RadioGroup value={shippingMethod} onValueChange={setShippingMethod}>
+                                        <div className="flex items-center space-x-2 mb-4">
+                                            <RadioGroupItem value="letter" id="letter"/>
+                                            <Label htmlFor="letter" className="text-xl">
+                                                Briefpost (CHF 1.40) - 3-5 Werktage
+                                            </Label>
+                                        </div>
                                         <div className="flex items-center space-x-2 mb-4">
                                             <RadioGroupItem value="standard" id="standard"/>
                                             <Label htmlFor="standard" className="text-xl">
                                                 Standardversand (CHF 7.00) - 3-5 Werktage
                                             </Label>
                                         </div>
-                                        <div className="flex items-center space-x-2 mb-4">
-                                            <RadioGroupItem value="express" id="express"/>
-                                            <Label htmlFor="express" className="text-xl">
-                                                Expressversand (CHF 15.00) - 1-2 Werktage
-                                            </Label>
-                                        </div>
                                         <div className="flex items-center space-x-2">
                                             <RadioGroupItem value="pickup" id="pickup"/>
                                             <Label htmlFor="pickup" className="text-xl">
-                                                Abholung (Kostenlos)
+                                                Abholung (Kostenlos): <br/>Ich kenne jemand von röster.ch und weiss, wie
+                                                ich zu meinem Kaffee komme
                                             </Label>
                                         </div>
                                     </RadioGroup>
@@ -163,7 +171,7 @@ export default function Checkout() {
 
                     {cart.items.length > 0 && (
                         <>
-                            <Card>
+                            <Card className={"mt-8"}>
                                 <CardHeader>
                                     <CardTitle className="text-2xl">Bestellung Total</CardTitle>
                                 </CardHeader>
@@ -179,7 +187,7 @@ export default function Checkout() {
                                         </div>
                                         <Separator/>
                                         <div className="flex justify-between font-bold">
-                                            <span className="text-2xl mt-2">Total</span>
+                                        <span className="text-2xl mt-2">Total</span>
                                             <span className="text-2xl mt-2">CHF {total.toFixed(2)}</span>
                                         </div>
                                     </div>
