@@ -4,12 +4,15 @@ import {Roast} from "@/types/roast";
 import {AppUser} from "@/types/app-user";
 import {getAppUserById} from "@/lib/api/app-user";
 import {auth} from "@/auth";
+import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
+import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
 
 
 export default async function ProfileAddressEditFormPage() {
    let appUser: AppUser | null = null;  // Initialize roast as null
    let isError = false;
    const session = await auth()
+
 
    console.log(`session: ${JSON.stringify(session)}`)
 
@@ -24,8 +27,12 @@ export default async function ProfileAddressEditFormPage() {
    }
 
 
-   console.log(`appUser Server: ${appUser}`)
+   console.log(`appUser Server: ${JSON.stringify(appUser)}`);
    console.log(`isError: ${isError}`)
 
-   return (<ProfileAddressEditForm appUser={appUser as AppUser}/>)
+   return (
+       <CheckAuthAndRedirect>
+         <ProfileAddressEditForm appUser={appUser as AppUser}/>
+       </CheckAuthAndRedirect>
+   )
 }

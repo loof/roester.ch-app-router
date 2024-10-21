@@ -1,6 +1,7 @@
 import { Check, Truck, CreditCard, Package, ShoppingCart } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
 
 export default function OrderDetail() {
     // This would typically come from your application's state or props
@@ -23,6 +24,7 @@ export default function OrderDetail() {
     const currentStatusIndex = statuses.findIndex(s => s.key === orderDetails.status)
 
     return (
+        <CheckAuthAndRedirect>
         <div className="container mx-auto px-4 max-w-screen-lg">
             <h1 className="font-sans normal-case">Order Status</h1>
 
@@ -75,5 +77,6 @@ export default function OrderDetail() {
                 <div className="absolute top-0 bottom-0 left-4 w-px bg-muted -translate-x-1/2 z-0" />
             </div>
         </div>
+        </CheckAuthAndRedirect>
     )
 }

@@ -9,6 +9,7 @@ import {Input} from "@/components/ui/input"
 import {useEffect, useState} from "react";
 import Link from "next/link";
 import {useRouter, useSearchParams} from 'next/navigation'
+import ErrorMessage from "@/components/error-message";
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -70,7 +71,7 @@ export default function LoginPage() {
     return (
         <main className={"container max-w-md"}>
             <h1 className="font-sans normal-case">Login</h1>
-            {errors && errors.login && <h2>{errors.login}</h2>}
+            {errors && errors.login && <ErrorMessage className={"mt-12 text-xl"}>{errors.login}</ErrorMessage>}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-10 mt-12">
                     <FormField

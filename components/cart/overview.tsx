@@ -35,13 +35,13 @@ export default function CartOverview() {
         <div className="max-w-screen-lg mx-auto px-4">
             <h1 className={"font-sans normal-case"}>Warenkorb</h1>
             <div className="shadow-md rounded-lg overflow-hidden">
-                <div className={"mt-12"}>
+                <div className={"mt-12 grid grid-cols-1 gap-y-8"}>
                     {/* Check if cart is empty */}
                     {cart.items.length === 0 ? (
                         <p className="text-2xl text-gray-500">Der Warenkorb ist leer.</p>
                     ) : (
                         cart.items.map((item) => (
-                            <div key={item.id} className="flex items-center justify-between border-b last:border-b-0">
+                            <div key={item.id} className="flex items-center justify-between border-b pb-5 last:border-b-0">
                                 <div className="flex items-center space-x-4">
                                     <div>
                                         <h2 className="font-sans text-primary-foreground text-2xl normal-case min-w-[107px]">

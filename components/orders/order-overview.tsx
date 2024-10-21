@@ -34,6 +34,7 @@ import {
     ExternalLink, SearchIcon
 } from 'lucide-react'
 import {Order} from "@/types/order";
+import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
 
 export default function OrderOverview() {
     const [searchTerm, setSearchTerm] = useState("")
@@ -84,6 +85,8 @@ export default function OrderOverview() {
 
 
     return (
+        <CheckAuthAndRedirect>
+
         <div className="container mx-auto px-4 max-w-screen-lg">
             <h1 className="font-sans normal-case">Bestellungen</h1>
 
@@ -207,5 +210,6 @@ export default function OrderOverview() {
                 </Table>
             </div>
         </div>
+        </CheckAuthAndRedirect>
     )
 }

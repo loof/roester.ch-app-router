@@ -18,12 +18,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
 
 
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [shippingMethod, setShippingMethod] = useState('standard');
+
 
     const shippingAddress = {
         name: "Yves Peissard",
@@ -57,11 +59,13 @@ export default function Checkout() {
     };
 
     return (
-        <div className="container mx-auto px-4 max-w-screen-lg">
-            <h1 className="font-sans normal-case">Bestellübersicht</h1>
 
-            {/* Add gap between grid items */}
-            <div className="grid grid-cols-1 gap-y-8 mb-20 mt-12">
+        <CheckAuthAndRedirect>
+            <div className="container mx-auto px-4 max-w-screen-lg">
+                <h1 className="font-sans normal-case">Bestellübersicht</h1>
+
+                {/* Add gap between grid items */}
+                <div className="grid grid-cols-1 gap-y-8 mb-20 mt-12">
 
                     <Card>
                         <CardContent className="mt-8">
@@ -87,7 +91,8 @@ export default function Checkout() {
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle className="text-2xl">Lieferadresse</CardTitle>
-                                    <Link className={"hover:text-primary"} href={`/profile/address/edit`}>Bearbeiten</Link>
+                                    <Link className={"hover:text-primary"}
+                                          href={`/profile/address/edit`}>Bearbeiten</Link>
                                 </CardHeader>
                                 <CardContent className="text-sm">
                                     <p className="text-xl">{shippingAddress.street}</p>
@@ -103,19 +108,19 @@ export default function Checkout() {
                                 <CardContent>
                                     <RadioGroup value={shippingMethod} onValueChange={setShippingMethod}>
                                         <div className="flex items-center space-x-2 mb-4">
-                                            <RadioGroupItem value="standard" id="standard" />
+                                            <RadioGroupItem value="standard" id="standard"/>
                                             <Label htmlFor="standard" className="text-xl">
                                                 Standardversand (CHF 7.00) - 3-5 Werktage
                                             </Label>
                                         </div>
                                         <div className="flex items-center space-x-2 mb-4">
-                                            <RadioGroupItem value="express" id="express" />
+                                            <RadioGroupItem value="express" id="express"/>
                                             <Label htmlFor="express" className="text-xl">
                                                 Expressversand (CHF 15.00) - 1-2 Werktage
                                             </Label>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="pickup" id="pickup" />
+                                            <RadioGroupItem value="pickup" id="pickup"/>
                                             <Label htmlFor="pickup" className="text-xl">
                                                 Abholung (Kostenlos)
                                             </Label>
@@ -127,62 +132,65 @@ export default function Checkout() {
                     )}
 
 
-                {cart.items.length > 0 && (
-                   <>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-2xl">Bestellung Total</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2">
-                                    <div className="flex justify-between">
-                                        <span className="text-lg">Subtotal</span>
-                                        <span>CHF {subtotal.toFixed(2)}</span>
+                    {cart.items.length > 0 && (
+                        <>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-2xl">Bestellung Total</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between">
+                                            <span className="text-lg">Subtotal</span>
+                                            <span>CHF {subtotal.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-lg mb-2">Versand</span>
+                                            <span>CHF {shippingCost.toFixed(2)}</span>
+                                        </div>
+                                        <Separator/>
+                                        <div className="flex justify-between font-bold">
+                                            <span className="text-2xl mt-2">Total</span>
+                                            <span className="text-2xl mt-2">CHF {total.toFixed(2)}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-lg mb-2">Versand</span>
-                                        <span>CHF {shippingCost.toFixed(2)}</span>
-                                    </div>
-                                    <Separator/>
-                                    <div className="flex justify-between font-bold">
-                                        <span className="text-2xl mt-2">Total</span>
-                                        <span className="text-2xl mt-2">CHF {total.toFixed(2)}</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button className="w-full" onClick={handleOrderConfirmation}>
-                                    <CreditCard className="mr-2 h-4 w-4"/>Kostenpflichtig bestellen
-                                </Button>
-                            </CardFooter>
-                        </Card>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button className="w-full" onClick={handleOrderConfirmation}>
+                                        <CreditCard className="mr-2 h-4 w-4"/>Kostenpflichtig bestellen
+                                    </Button>
+                                </CardFooter>
+                            </Card>
 
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex items-center text-sm text-muted-foreground">
-                                    <Truck className="mr-6 h-8 w-8"/>
-                                    <span className="text-xl">
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center text-sm text-muted-foreground">
+                                        <Truck className="mr-6 h-8 w-8"/>
+                                        <span className="text-xl">
                                         Geschätzte Lieferzeit: {shippingMethod === 'express' ? '1-2' : '3-5'} Werktage
                                     </span>
-                                </div>
-                            </CardContent>
-                        </Card>
-                   </>
-                )}
-            </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+                </div>
 
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className="font-sans normal-case text-3xl">Bestellbestätigung</DialogTitle>
-                    </DialogHeader>
-                    <p className="text-2xl">Willst du wirklich kostenpflichtig bestellen?</p>
-                    <DialogFooter className={"flex gap-3"}>
-                        <Button className={"min-w-20"} onClick={confirmOrder}>Ja</Button>
-                        <Button className={"min-w-20"} variant="outline" onClick={cancelOrder}>Nein</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+                <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="font-sans normal-case text-3xl">Bestellbestätigung</DialogTitle>
+                        </DialogHeader>
+                        <p className="text-2xl">Willst du wirklich kostenpflichtig bestellen?</p>
+                        <DialogFooter className={"flex gap-3"}>
+                            <Button className={"min-w-20"} onClick={confirmOrder}>Ja</Button>
+                            <Button className={"min-w-20"} variant="outline" onClick={cancelOrder}>Nein</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </div>
+        </CheckAuthAndRedirect>
+
+
     )
 }

@@ -21,6 +21,7 @@ import {updateAppUser} from "@/lib/api/app-user";
 import {useSession} from "next-auth/react";
 import App from "next/app";
 import {AppUserLight} from "@/types/app-user-light";
+import {useShoppingCart} from "@/app/hooks/use-shopping-cart";
 
 // Define schema for validation
 const FormSchema = z.object({
@@ -42,6 +43,7 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
     const generic_error_message = "Etwas ist schief gegangen. Versuche es erneut.";
     const {data: session} = useSession();
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
 
 
 
@@ -68,13 +70,14 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
                 lastname: data.lastname,
                 companyName: data.companyName || null,
                 location: {
-                    id: appUser.location.id,
+                    id: appUser?.location?.id || null,  // Add a safe check for appUser and location
                     street: data.street,
                     streetNumber: data.streetNumber,
                     city: data.city,
                     postalCode: data.postalCode,
                 }
             };
+
 
 
             console.log(`updatedUser: ${JSON.stringify(updatedUser)}`);
