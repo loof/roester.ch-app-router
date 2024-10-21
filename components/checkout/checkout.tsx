@@ -19,12 +19,14 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
+import {usePathname} from "next/navigation";
 
 
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [shippingMethod, setShippingMethod] = useState('standard');
+    const pathname = usePathname();
 
 
     const shippingAddress = {
@@ -92,7 +94,7 @@ export default function Checkout() {
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle className="text-2xl">Lieferadresse</CardTitle>
                                     <Link className={"hover:text-primary"}
-                                          href={`/profile/address/edit`}>Bearbeiten</Link>
+                                          href={`/profile/address/edit?next=${pathname}`}>Bearbeiten</Link>
                                 </CardHeader>
                                 <CardContent className="text-sm">
                                     <p className="text-xl">{shippingAddress.street}</p>

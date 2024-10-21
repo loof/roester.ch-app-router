@@ -13,7 +13,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import ErrorMessage from "@/components/error-message";
 import {AppUser} from "@/types/app-user";
 import {useEffect, useState} from "react";
@@ -44,6 +44,7 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
     const {data: session} = useSession();
     const [isLoggedIn, setLoggedIn] = useState(false);
     const {cart, addShoppingCartItem, removeShoppingCartItem} = useShoppingCart();
+    const searchParams = useSearchParams()
 
 
 
@@ -78,23 +79,14 @@ export default function ProfileAddressEditForm({appUser, className}: { appUser: 
                 }
             };
 
-
-
-            console.log(`updatedUser: ${JSON.stringify(updatedUser)}`);
-
             if (!session?.user) {
                 throw new Error("User session is not available");
             }
 
-            const res = await updateAppUser(session.user.accessToken, session.user.userId, updatedUser);
+            await updateAppUser(session.user.accessToken, session.user.userId, updatedUser);
 
+            window.location.href = searchParams.get("next") || "/";
 
-            /*if (res.ok) {
-                router.push("/profile");
-            } else {
-                const errorBody = await res.json();
-                setErrors((prev) => ({ ...prev, update: errorBody.error }));
-            }*/
         } catch (error) {
             setErrors((prev) => ({ ...prev, update: generic_error_message }));
         }
