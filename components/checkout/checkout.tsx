@@ -17,26 +17,41 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import {useSession} from "next-auth/react";
 import CheckAuthAndRedirect from "@/components/check-auth-and-redirect";
 import {usePathname} from "next/navigation";
+import {getAppUserById} from "@/lib/api/app-user";
+import {AppUser} from "@/types/app-user";
+import {AppUserLight} from "@/types/app-user-light";
+import ErrorMessage from "@/components/error-message";
 
 
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [shippingMethod, setShippingMethod] = useState('standard');
+    const [appUser, setAppUser] = useState<AppUserLight>();
     const pathname = usePathname();
+    const { data: session } = useSession();
 
+    console.log(`session: ${JSON.stringify(session)}`);
 
-    const shippingAddress = {
-        name: "Yves Peissard",
-        street: "Kasparstrasse 17",
-        city: "3027",
-        state: "Bern",
-        zip: "",
-        country: "Schweiz"
-    }
+    useEffect(() => {
+        if (!session) return
+        async function loadShippingAddress() {
+            if (session?.user?.userId) {
+                try {
+                    const userData = await getAppUserById(session.user.accessToken, session.user.userId);
+                    // Assuming userData contains the shipping address in a "location" field
+                    setAppUser(userData);
+                } catch (error) {
+                    console.error("Failed to load shipping address:", error);
+                }
+            }
+        }
+        loadShippingAddress();
+    }, [session]);
+
 
     const subtotal = cart.items.reduce((sum, item) => sum + (item.variant?.price ?? 0) * item.amount, 0)
     const shippingCosts = {
@@ -107,14 +122,16 @@ export default function Checkout() {
                                           href={`/profile/address/edit?next=${pathname}`}>Bearbeiten</Link>
                                 </CardHeader>
                                 <CardContent className="text-sm">
-                                    <p className="text-xl">{shippingAddress.street}</p>
-                                    <p className="text-xl">{shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}</p>
-                                    <p className="text-xl">{shippingAddress.country}</p>
+                                    <p className="text-xl">{appUser?.firstname} {appUser?.lastname}</p>
+                                    <p className="text-xl">{appUser?.location.street} {appUser?.location.streetNumber}</p>
+                                    <p className="text-xl">{appUser?.location.postalCode} {appUser?.location.city}</p>
+                                    {appUser?.location && <p className="text-xl">Schweiz</p>}
+                                    {appUser?.location && <ErrorMessage className={"mt-5 text-primary-foreground"}>Achtung: Wir liefern nur in die Schweiz</ErrorMessage>}
                                 </CardContent>
                             </Card>
 
                             <Card>
-                                <CardHeader>
+                            <CardHeader>
                                     <CardTitle className="text-2xl">Versandmethode</CardTitle>
                                 </CardHeader>
                                 <CardContent>

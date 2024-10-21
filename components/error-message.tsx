@@ -3,7 +3,7 @@
 export default function ErrorMessage({children, className}: { children: React.ReactNode, className?: string }) {
     return (
 
-    <div className={`${className} flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-primary`}
+    <div className={`flex items-center p-4 mb-4 text-sm  rounded-lg  bg-gray-800 text-primary ${className}`}
          role="alert">
         <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
              fill="currentColor" viewBox="0 0 20 20">
