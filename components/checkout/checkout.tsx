@@ -29,12 +29,26 @@ import ErrorMessage from "@/components/error-message";
 export default function Checkout() {
     const { cart, addShoppingCartItem, removeShoppingCartItem } = useShoppingCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [shippingMethod, setShippingMethod] = useState('pickup');
+    const [shippingMethod, setShippingMethod] = useState(() => {
+        // Initialize the shipping method from localStorage or default to 'pickup'
+        return localStorage.getItem('shippingMethod') || 'pickup';
+    });
     const [appUser, setAppUser] = useState<AppUserLight>();
     const pathname = usePathname();
     const { data: session } = useSession();
 
     console.log(`session: ${JSON.stringify(session)}`);
+
+    useEffect(() => {
+        const savedMethod = localStorage.getItem('shippingMethod');
+        if (savedMethod) {
+            setShippingMethod(savedMethod); // Restore saved method
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('shippingMethod', shippingMethod);
+    }, [shippingMethod]);
 
     useEffect(() => {
         if (!session) return
@@ -116,7 +130,7 @@ export default function Checkout() {
                     {cart.items.length > 0 && (
                         <>
                             <div
-                                className={`mt-8 transition-all duration-300 ease-in-out overflow-hidden ${shippingMethod === "pickup" ? "opacity-0 max-h-0" : "opacity-100 max-h-[1000px]"}`}
+                                className={`mt-8 transition-all duration-1000 ease-in-out overflow-hidden ${shippingMethod === "pickup" ? "opacity-0 max-h-0" : "opacity-100 max-h-[1000px]"}`}
                             >
                                 <Card>
                                     <CardHeader className="flex flex-row items-center justify-between">
@@ -199,7 +213,7 @@ export default function Checkout() {
                                 </CardFooter>
                             </Card>
 
-                            <Card>
+                            <Card className={"mt-8"}>
                                 <CardContent className="pt-6">
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <Truck className="mr-6 h-8 w-8"/>
