@@ -85,7 +85,17 @@ export default function Checkout() {
                                     </div>
                                 ))
                             )}
+
+                            {/* Static content to display after the items */}
+                            <div className="space-y-2">
+                                <Separator/>
+                                <div className="flex justify-between font-bold">
+                                    <span className="text-2xl mt-2">Subtotal</span>
+                                    <span className="text-2xl mt-2">CHF {subtotal.toFixed(2)}</span>
+                                </div>
+                            </div>
                         </CardContent>
+
                     </Card>
 
                     {cart.items.length > 0 && (
