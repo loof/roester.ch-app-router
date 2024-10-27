@@ -48,7 +48,8 @@ export default function CartOverview() {
                                             {item.variant?.productName}
                                         </h2>
                                         <p className="text-lg text-gray-400">
-                                            {item.variant?.name} {item.variant?.displayUnit.name}
+                                            {item.variant?.name} {item.variant?.displayUnit.name} {item.variant?.separateShipmentComment ? `(${item.variant.separateShipmentComment})` : ''}
+
                                         </p>
                                     </div>
                                 </div>

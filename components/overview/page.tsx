@@ -169,7 +169,7 @@ export default function OverviewPage({roast, className}: { roast: Roast, classNa
                                                                                         key={uuidv4()}
                                                                                         value={String(v.id)}
                                                                                     >
-                                                                                        {v.name}{v.displayUnit.name}
+                                                                                        {v.name}{v.displayUnit.name} {v.separateShipmentComment ? `(${v.separateShipmentComment})` : ''}
                                                                                     </ToggleGroupItem>
                                                                                 ))}
                                                                             </ToggleGroup>

@@ -9,4 +9,5 @@ export type Variant = {
     price: number | null;
     productName: string | null;
     stockMultiplier: number;
+    separateShipmentComment: number | null;
 };
